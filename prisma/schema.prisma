@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL")
+}
+
+model User {
+  id       String    @id @default(uuid())
+  name     String
+  email    String    @unique
+  password String
+  invoices Invoice[]
+}
+
+model Invoice {
+  id          String   @id @default(uuid())
+  customer_id String
+  amount      Int
+  status      String
+  date        DateTime
+  customer    Customer @relation(fields: [customer_id], references: [id])
+  User        User?    @relation(fields: [user_id], references: [id])
+  user_id     String?
+}
+
+model Customer {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  image_url String
+  invoices  Invoice[]
+}
+
+model Revenue {
+  month   String @id
+  revenue Int
+}
+
+// * trans_mode: 운송 방법
+// * g_weight: 무게 - 소숫점 2자리
+// * volume: 부피 - 소숫점 2자리
+// * pol: 수출지역
+// * writer: 작성자
+// * manager: 담당자
+// * c_mode: 컨테이너 모드
+// * claim_currency: 청구 통화
+// * apply_currency: 적용 통화
+// * pod: 수입지역
+
+model Quote {
+  id        String      @id @default(uuid())
+  writer    String
+  manager   String
+  gWeight   Float
+  items     Item[]
+  QuoteItem QuoteItem[]
+  createdAt DateTime    @default(now())
+}
+
+model Item {
+  id        String      @id @default(uuid())
+  code      String      @unique
+  quote     Quote[]
+  QuoteItem QuoteItem[]
+  name      String
+  createdAt DateTime    @default(now())
+}
+
+model QuoteItem {
+  quote_id String
+  item_id  String
+  quote    Quote  @relation(fields: [quote_id], references: [id], onDelete: Cascade)
+  Item     Item   @relation(fields: [item_id], references: [id])
+  code     String
+  name     String
+
+  @@id([quote_id, item_id])
+}
