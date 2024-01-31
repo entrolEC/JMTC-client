@@ -7,7 +7,10 @@ export default function NotFound() {
             <FaceFrownIcon className="w-10 text-gray-400" />
             <h2 className="text-xl font-semibold">404 Not Found</h2>
             <p>Could not find the requested item.</p>
-            <Link href="/dashboard/items" className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400">
+            <Link
+                href="/dashboard/quotations"
+                className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
+            >
                 Go Back
             </Link>
         </main>

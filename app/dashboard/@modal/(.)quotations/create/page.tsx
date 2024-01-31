@@ -1,10 +1,10 @@
 import Modal from "@/app/ui/modal";
-import ItemCreateForm from "@/app/ui/items/create-form";
+import QuotationCreateForm from "@/app/ui/quotations/create-form";
 
 export default function Page() {
     return (
         <Modal>
-            <ItemCreateForm />
+            <QuotationCreateForm />
         </Modal>
     );
 }

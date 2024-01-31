@@ -1,4 +1,6 @@
 import { Revenue } from "./definitions";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export const formatCurrency = (amount: number) => {
     return (amount / 100).toLocaleString("en-US", {
@@ -55,3 +57,7 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     // another ellipsis, and the last page.
     return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
 };
+
+export function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
