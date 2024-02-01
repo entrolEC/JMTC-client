@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { DeleteInvoice, UpdateInvoice } from "@/app/ui/invoices/buttons";
 import InvoiceStatus from "@/app/ui/invoices/status";
-import { formatCurrency, formatDateToLocal } from "@/app/lib/utils";
+import { formatCurrency } from "@/app/lib/utils";
 import { fetchFilteredInvoices } from "@/app/lib/data";
 
 export default async function InvoicesTable({ query, currentPage }: { query: string; currentPage: number }) {
@@ -33,7 +33,7 @@ export default async function InvoicesTable({ query, currentPage }: { query: str
                                 <div className="flex w-full items-center justify-between pt-4">
                                     <div>
                                         <p className="text-xl font-medium">{formatCurrency(invoice.amount)}</p>
-                                        <p>{formatDateToLocal(invoice.date)}</p>
+                                        {/*<p>{formatDateToLocal(invoice.date)}</p>*/}
                                     </div>
                                     <div className="flex justify-end gap-2">
                                         <UpdateInvoice id={invoice.id} />
@@ -86,7 +86,7 @@ export default async function InvoicesTable({ query, currentPage }: { query: str
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-3">{invoice.email}</td>
                                     <td className="whitespace-nowrap px-3 py-3">{formatCurrency(invoice.amount)}</td>
-                                    <td className="whitespace-nowrap px-3 py-3">{formatDateToLocal(invoice.date)}</td>
+                                    {/*<td className="whitespace-nowrap px-3 py-3">{formatDateToLocal(invoice.date)}</td>*/}
                                     <td className="whitespace-nowrap px-3 py-3">
                                         <InvoiceStatus status={invoice.status} />
                                     </td>
