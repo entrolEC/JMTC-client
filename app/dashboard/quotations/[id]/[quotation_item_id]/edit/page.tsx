@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: string; quotation_item_id: string } }) {
     const { id, quotation_item_id } = params;
-    const [quotationItem] = await Promise.all([fetchQuotationItemById(id)]);
+    const [quotationItem] = await Promise.all([fetchQuotationItemById(quotation_item_id)]);
 
     if (!quotationItem) {
         notFound();

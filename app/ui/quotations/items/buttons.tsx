@@ -14,9 +14,9 @@ export function CreateQuotationItem({ id }: { id: string }) {
     );
 }
 
-export function UpdateQuotationItem({ id }: { id: string }) {
+export function UpdateQuotationItem({ quotationId, id }: { quotationId: string; id: string }) {
     return (
-        <Link href={`/dashboard/quotations/${id}/edit`} className="rounded-md border p-2 hover:bg-gray-100">
+        <Link href={`/dashboard/quotations/${quotationId}/${id}/edit`} className="rounded-md border p-2 hover:bg-gray-100">
             <PencilIcon className="w-5" />
         </Link>
     );

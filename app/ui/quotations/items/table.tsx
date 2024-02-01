@@ -15,7 +15,7 @@ export default function QuotationItemsTable({ quotationItems }: { quotationItems
                                         <p>{quotationItem.name}</p>
                                     </div>
                                     <div className="flex justify-end gap-2">
-                                        <UpdateQuotationItem id={quotationItem.id} />
+                                        <UpdateQuotationItem quotationId={quotationItem.quote_id} id={quotationItem.id} />
                                         <DeleteQuotationItem quotationId={quotationItem.quote_id} id={quotationItem.id} />
                                     </div>
                                 </div>
@@ -46,7 +46,7 @@ export default function QuotationItemsTable({ quotationItems }: { quotationItems
                                     <td className="whitespace-nowrap px-3 py-3">{quotationItem.name}</td>
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex justify-end gap-3">
-                                            <UpdateQuotationItem id={quotationItem.id} />
+                                            <UpdateQuotationItem quotationId={quotationItem.quote_id} id={quotationItem.id} />
                                             <DeleteQuotationItem quotationId={quotationItem.quote_id} id={quotationItem.id} />
                                         </div>
                                     </td>
