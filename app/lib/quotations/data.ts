@@ -14,3 +14,17 @@ export async function fetchQuotationById(id: string) {
         throw new Error("Failed to fetch quotation.");
     }
 }
+
+export async function fetchQuotationItemById(id: string) {
+    noStore();
+    try {
+        const quotationItem = await prisma.quoteItem.findUnique({
+            where: { id: id },
+        });
+
+        return quotationItem;
+    } catch (error) {
+        console.error("Database Error:", error);
+        throw new Error("Failed to fetch quotation item.");
+    }
+}

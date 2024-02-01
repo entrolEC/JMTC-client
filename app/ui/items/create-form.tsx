@@ -21,7 +21,7 @@ export default function ItemCreateForm() {
                             id="code"
                             name="code"
                             placeholder="코드를 입력해주세요."
-                            className="peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
+                            className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                             aria-describedby="code-error"
                         />
                     </div>
@@ -46,7 +46,7 @@ export default function ItemCreateForm() {
                                 id="name"
                                 name="name"
                                 placeholder="이름을 입력하세요."
-                                className="peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
+                                className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="name-error"
                             />
                         </div>

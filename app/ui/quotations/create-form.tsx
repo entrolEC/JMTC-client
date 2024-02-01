@@ -23,7 +23,7 @@ export default function QuotationCreateForm() {
                             type="number"
                             step={0.01}
                             placeholder="g.weight를 입력해주세요."
-                            className="peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
+                            className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                             aria-describedby="code-error"
                         />
                     </div>
@@ -48,7 +48,7 @@ export default function QuotationCreateForm() {
                                 id="manager"
                                 name="manager"
                                 placeholder="담당자를 입력하세요."
-                                className="peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
+                                className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="name-error"
                             />
                         </div>

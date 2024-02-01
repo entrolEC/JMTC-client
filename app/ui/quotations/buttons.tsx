@@ -1,6 +1,6 @@
-import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { DocumentMagnifyingGlassIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { deleteInvoice } from "@/app/lib/invoices/actions";
+import { deleteQuotation } from "@/app/lib/quotations/actions";
 
 export function CreateQuotation() {
     return (
@@ -14,6 +14,14 @@ export function CreateQuotation() {
     );
 }
 
+export function QuotationDetail({ id }: { id: string }) {
+    return (
+        <Link href={`/dashboard/quotations/${id}`} className="rounded-md border p-2 hover:bg-gray-100">
+            <DocumentMagnifyingGlassIcon className="w-5" />
+        </Link>
+    );
+}
+
 export function UpdateQuotation({ id }: { id: string }) {
     return (
         <Link href={`/dashboard/quotations/${id}/edit`} className="rounded-md border p-2 hover:bg-gray-100">
@@ -23,10 +31,10 @@ export function UpdateQuotation({ id }: { id: string }) {
 }
 
 export function DeleteQuotation({ id }: { id: string }) {
-    const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+    const deleteQuotationWithId = deleteQuotation.bind(null, id);
 
     return (
-        <form action={deleteInvoiceWithId}>
+        <form action={deleteQuotationWithId}>
             <button className="rounded-md border p-2 hover:bg-gray-100">
                 <span className="sr-only">Delete</span>
                 <TrashIcon className="w-5" />

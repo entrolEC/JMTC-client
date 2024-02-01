@@ -116,6 +116,7 @@ export async function deleteQuotation(id: string) {
         await prisma.quote.delete({
             where: { id: id },
         });
+        revalidatePath("/dashboard/quotations");
         return { message: "Deleted Quotation" };
     } catch (error) {
         return { message: "Database Error: Failed to Delete Quotation." };

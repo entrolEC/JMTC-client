@@ -1,26 +1,22 @@
-import { Quote } from "@prisma/client";
-import { DeleteQuotation, QuotationDetail, UpdateQuotation } from "@/app/ui/quotations/buttons";
-import { formatDateToLocal } from "@/app/lib/utils";
+import { QuoteItem } from "@prisma/client";
+import { DeleteQuotationItem, UpdateQuotationItem } from "@/app/ui/quotations/items/buttons";
 
-export default function QuotationsTable({ quotations }: { quotations: Quote[] }) {
+export default function QuotationItemsTable({ quotationItems }: { quotationItems: QuoteItem[] }) {
     return (
         <div className="mt-6 flow-root">
             <div className="inline-block min-w-full align-middle">
                 <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
                     <div className="md:hidden">
-                        {quotations?.map((quotation) => (
-                            <div key={quotation.id} className="mb-2 w-full rounded-md bg-white p-4">
+                        {quotationItems?.map((quotationItem) => (
+                            <div key={quotationItem.id} className="mb-2 w-full rounded-md bg-white p-4">
                                 <div className="flex w-full items-center justify-between pt-4">
                                     <div>
-                                        <p className="text-xl font-medium">{quotation.manager}</p>
-                                        <p>{quotation.writer}</p>
-                                        <p>{quotation.gWeight}</p>
-                                        <p>{formatDateToLocal(quotation.createdAt)}</p>
+                                        <p className="text-xl font-medium">{quotationItem.code}</p>
+                                        <p>{quotationItem.name}</p>
                                     </div>
                                     <div className="flex justify-end gap-2">
-                                        <QuotationDetail id={quotation.id} />
-                                        <UpdateQuotation id={quotation.id} />
-                                        <DeleteQuotation id={quotation.id} />
+                                        <UpdateQuotationItem id={quotationItem.id} />
+                                        <DeleteQuotationItem quotationId={quotationItem.quote_id} id={quotationItem.id} />
                                     </div>
                                 </div>
                             </div>
@@ -30,16 +26,10 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                         <thead className="rounded-lg text-left text-sm font-normal">
                             <tr>
                                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                                    담당자
+                                    코드
                                 </th>
                                 <th scope="col" className="px-3 py-5 font-medium">
-                                    작성자
-                                </th>
-                                <th scope="col" className="px-3 py-5 font-medium">
-                                    g.weight
-                                </th>
-                                <th scope="col" className="px-3 py-5 font-medium">
-                                    작성일
+                                    이름
                                 </th>
                                 <th scope="col" className="relative py-3 pl-6 pr-3">
                                     <span className="sr-only">Edit</span>
@@ -47,20 +37,17 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                             </tr>
                         </thead>
                         <tbody className="bg-white">
-                            {quotations?.map((quotation) => (
+                            {quotationItems?.map((quotationItem) => (
                                 <tr
-                                    key={quotation.id}
+                                    key={quotationItem.id}
                                     className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                                 >
-                                    <td className="whitespace-nowrap px-5 py-3">{quotation.manager}</td>
-                                    <td className="whitespace-nowrap px-3 py-3">{quotation.writer}</td>
-                                    <td className="whitespace-nowrap px-3 py-3">{quotation.gWeight}</td>
-                                    <td className="whitespace-nowrap px-3 py-3">{formatDateToLocal(quotation.createdAt)}</td>
+                                    <td className="whitespace-nowrap px-5 py-3">{quotationItem.code}</td>
+                                    <td className="whitespace-nowrap px-3 py-3">{quotationItem.name}</td>
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex justify-end gap-3">
-                                            <QuotationDetail id={quotation.id} />
-                                            <UpdateQuotation id={quotation.id} />
-                                            <DeleteQuotation id={quotation.id} />
+                                            <UpdateQuotationItem id={quotationItem.id} />
+                                            <DeleteQuotationItem quotationId={quotationItem.quote_id} id={quotationItem.id} />
                                         </div>
                                     </td>
                                 </tr>

@@ -11,8 +11,8 @@ const FormSchema = z.object({
     name: z.string().min(1, "Please type a name"),
 });
 
-const CreateItem = FormSchema.omit({ id: true, date: true });
-const UpdateItem = FormSchema.omit({ date: true, id: true });
+const CreateQuotationItem = FormSchema.omit({ id: true });
+const UpdateQuotationItem = FormSchema.omit({ id: true });
 
 // This is temporary
 export type State = {
@@ -23,9 +23,9 @@ export type State = {
     message?: string | null;
 };
 
-export async function createItem(prevState: State, formData: FormData) {
+export async function createQuotationItem(quotationId: string, prevState: State, formData: FormData) {
     // Validate form fields using Zod
-    const validatedFields = CreateItem.safeParse({
+    const validatedFields = CreateQuotationItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
     });
@@ -43,31 +43,25 @@ export async function createItem(prevState: State, formData: FormData) {
 
     // Insert data into the database using Prisma
     try {
-        await prisma.item.create({
+        await prisma.quoteItem.create({
             data: {
                 code: code,
                 name: name,
+                quote_id: quotationId,
             },
         });
     } catch (error: any) {
-        // If a database error occurs, return a more specific error.
-        if (error.code === "P2002") {
-            return {
-                message: "중복된 코드가 존재합니다.",
-            };
-        }
         return {
             message: "데이터베이스 오류.",
         };
     }
 
-    // Revalidate the cache for the invoices page and redirect the user.
-    revalidatePath("/dashboard/items");
-    redirect("/dashboard/items");
+    revalidatePath(`/dashboard/quotations/${quotationId}`);
+    redirect(`/dashboard/quotations/${quotationId}`);
 }
 
-export async function updateItem(id: string, prevState: State, formData: FormData) {
-    const validatedFields = UpdateItem.safeParse({
+export async function updateQuotationItem(quotationId: string, id: string, prevState: State, formData: FormData) {
+    const validatedFields = UpdateQuotationItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
     });
@@ -75,7 +69,7 @@ export async function updateItem(id: string, prevState: State, formData: FormDat
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
-            message: "Missing Fields. Failed to Update Invoice.",
+            message: "Missing Fields. Failed to Update QuoteItem.",
         };
     }
 
@@ -83,7 +77,7 @@ export async function updateItem(id: string, prevState: State, formData: FormDat
 
     // Update the database record using Prisma
     try {
-        await prisma.item.update({
+        await prisma.quoteItem.update({
             where: { id: id },
             data: {
                 code: code,
@@ -91,23 +85,23 @@ export async function updateItem(id: string, prevState: State, formData: FormDat
             },
         });
     } catch (error) {
-        return { message: "Database Error: Failed to Update Item." };
+        return { message: "Database Error: Failed to Update QuoteItem." };
     }
 
-    revalidatePath("/dashboard/items");
-    redirect("/dashboard/items");
+    revalidatePath(`/dashboard/quotations/${quotationId}`);
+    redirect(`/dashboard/quotations/${quotationId}`);
 }
 
-export async function deleteItem(id: string) {
+export async function deleteQuotationItem(quotationId: string, id: string) {
     // throw new Error('Failed to Delete Invoice');
 
     try {
-        await prisma.item.delete({
+        await prisma.quoteItem.delete({
             where: { id: id },
         });
-        revalidatePath("/dashboard/items");
-        return { message: "Deleted Item" };
+        redirect(`/dashboard/quotations/${quotationId}`);
+        return { message: "Deleted QuoteItem" };
     } catch (error) {
-        return { message: "Database Error: Failed to Delete Item." };
+        return { message: "Database Error: Failed to Delete QuoteItem" };
     }
 }

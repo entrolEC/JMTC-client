@@ -62,21 +62,17 @@ model Quote {
 }
 
 model Item {
-  id        String      @id @default(uuid())
-  code      String      @unique
+  id        String   @id @default(uuid())
+  code      String   @unique
   quote     Quote[]
-  QuoteItem QuoteItem[]
   name      String
-  createdAt DateTime    @default(now())
+  createdAt DateTime @default(now())
 }
 
 model QuoteItem {
+  id       String @id @default(uuid())
   quote_id String
-  item_id  String
   quote    Quote  @relation(fields: [quote_id], references: [id], onDelete: Cascade)
-  Item     Item   @relation(fields: [item_id], references: [id])
   code     String
   name     String
-
-  @@id([quote_id, item_id])
 }
