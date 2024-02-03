@@ -15,6 +15,8 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                                         <p className="text-xl font-medium">{quotation.manager}</p>
                                         <p>{quotation.writer}</p>
                                         <p>{quotation.gWeight}</p>
+                                        <p>{quotation.currency}</p>
+                                        <p>{quotation.exchangeRate}</p>
                                         <p>{formatDateToLocal(quotation.createdAt)}</p>
                                     </div>
                                     <div className="flex justify-end gap-2">
@@ -39,6 +41,12 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                                     g.weight
                                 </th>
                                 <th scope="col" className="px-3 py-5 font-medium">
+                                    통화
+                                </th>
+                                <th scope="col" className="px-3 py-5 font-medium">
+                                    환율
+                                </th>
+                                <th scope="col" className="px-3 py-5 font-medium">
                                     작성일
                                 </th>
                                 <th scope="col" className="relative py-3 pl-6 pr-3">
@@ -55,6 +63,8 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                                     <td className="whitespace-nowrap px-5 py-3">{quotation.manager}</td>
                                     <td className="whitespace-nowrap px-3 py-3">{quotation.writer}</td>
                                     <td className="whitespace-nowrap px-3 py-3">{quotation.gWeight}</td>
+                                    <td className="whitespace-nowrap px-3 py-3">{quotation.currency}</td>
+                                    <td className="whitespace-nowrap px-3 py-3">{quotation.exchangeRate}</td>
                                     <td className="whitespace-nowrap px-3 py-3">{formatDateToLocal(quotation.createdAt)}</td>
                                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                                         <div className="flex justify-end gap-3">

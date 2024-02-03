@@ -35,9 +35,7 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
                         <Popover open={open} onOpenChange={setOpen}>
                             <PopoverTrigger asChild>
                                 <Button name="currency" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
-                                    {value
-                                        ? selections.find((selection) => selection.value.code.toLowerCase() === value.toLowerCase())?.label
-                                        : "아이템 선택...."}
+                                    {value ? selections.find((selection) => selection.value.code === value)?.label : "아이템 선택...."}
                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                             </PopoverTrigger>
@@ -51,7 +49,7 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
                                                 key={selection.value.id}
                                                 value={selection.value.code}
                                                 onSelect={(currentValue) => {
-                                                    setValue(currentValue === value ? undefined : currentValue);
+                                                    setValue(currentValue === value ? undefined : currentValue.toUpperCase());
                                                     setOpen(false);
                                                 }}
                                             >
@@ -67,6 +65,30 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
                     <div id="currency-error" aria-live="polite" aria-atomic="true">
                         {state.errors?.currency &&
                             state.errors.currency.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="exchange_rate" className="mb-2 block text-sm font-medium">
+                        환율
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <Input
+                            id="exchange_reate"
+                            name="exchange_rate"
+                            type="number"
+                            step={0.001}
+                            placeholder="환율을 입력하세요"
+                            aria-describedby="manager-error"
+                        />
+                    </div>
+
+                    <div id="exchange_rate-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.exchangeRate &&
+                            state.errors.exchangeRate.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>
                                     {error}
                                 </p>

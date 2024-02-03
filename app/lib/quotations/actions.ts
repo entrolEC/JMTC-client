@@ -12,6 +12,7 @@ const FormSchema = z.object({
     manager: z.string().min(1, "Please type a manager"),
     writer: z.string(),
     currency: z.string(),
+    exchangeRate: z.coerce.number(),
 });
 
 const CreateQuotation = FormSchema.omit({ id: true, date: true, writer: true });
@@ -23,6 +24,7 @@ export type State = {
         gWeight?: string[];
         manager?: string[];
         currency?: string[];
+        exchangeRate?: string[];
     };
     message?: string | null;
 };
@@ -34,6 +36,7 @@ export async function createQuotation(_currency: string | undefined, prevState: 
         gWeight: formData.get("g_weight"),
         manager: formData.get("manager"),
         currency: _currency,
+        exchangeRate: formData.get("exchange_rate"),
     });
 
     // If form validation fails, return errors early. Otherwise, continue.
@@ -52,7 +55,7 @@ export async function createQuotation(_currency: string | undefined, prevState: 
     }
 
     // Prepare data for insertion into the database
-    const { manager, gWeight, currency } = validatedFields.data;
+    const { manager, gWeight, currency, exchangeRate } = validatedFields.data;
 
     // Insert data into the database using Prisma
     try {
@@ -62,7 +65,7 @@ export async function createQuotation(_currency: string | undefined, prevState: 
                 manager: manager,
                 writer: session.user.name,
                 currency: currency,
-                exchangeRate: 1,
+                exchangeRate: exchangeRate,
             },
         });
     } catch (error: any) {
