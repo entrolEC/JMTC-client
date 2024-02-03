@@ -50,15 +50,22 @@ model Revenue {
 // * claim_currency: 청구 통화
 // * apply_currency: 적용 통화
 // * pod: 수입지역
-
 model Quote {
-  id        String      @id @default(uuid())
-  writer    String
-  manager   String
-  gWeight   Float
-  items     Item[]
-  QuoteItem QuoteItem[]
-  createdAt DateTime    @default(now())
+  id           String      @id @default(uuid())
+  writer       String
+  manager      String
+  gWeight      Float
+  currency     String
+  exchangeRate Float
+  items        Item[]
+  QuoteItem    QuoteItem[]
+  createdAt    DateTime    @default(now())
+}
+
+model Currency {
+  id   String @id @default(uuid())
+  code String
+  name String
 }
 
 model Item {
@@ -66,6 +73,8 @@ model Item {
   code      String   @unique
   quote     Quote[]
   name      String
+  unit      String   @default("")
+  count     Float    @default(0)
   createdAt DateTime @default(now())
 }
 
@@ -75,4 +84,5 @@ model QuoteItem {
   quote    Quote  @relation(fields: [quote_id], references: [id], onDelete: Cascade)
   code     String
   name     String
+  price    Int    @default(0)
 }

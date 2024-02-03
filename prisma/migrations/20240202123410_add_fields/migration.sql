@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Item" ALTER COLUMN "count" SET DEFAULT 0,
+ALTER COLUMN "unit" SET DEFAULT '';
+
+-- AlterTable
+ALTER TABLE "QuoteItem" ALTER COLUMN "price" SET DEFAULT 0;

@@ -1,10 +1,13 @@
 import Modal from "@/app/ui/modal";
 import QuotationCreateForm from "@/app/ui/quotations/create-form";
+import { fetchCurrencies } from "@/app/lib/data";
 
-export default function Page() {
+export default async function Page() {
+    const currencies = await fetchCurrencies();
+
     return (
         <Modal>
-            <QuotationCreateForm />
+            <QuotationCreateForm currencies={currencies} />
         </Modal>
     );
 }

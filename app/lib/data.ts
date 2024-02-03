@@ -321,3 +321,14 @@ export async function fetchFilteredQuotationItems(id: string, query: string) {
         throw new Error("Failed to fetch quotation items");
     }
 }
+
+export async function fetchCurrencies() {
+    try {
+        const currencies = await prisma.currency.findMany();
+
+        return currencies;
+    } catch (error) {
+        console.error("Failed to fetch currencies", error);
+        throw new Error("Failed to fetch currencies");
+    }
+}
