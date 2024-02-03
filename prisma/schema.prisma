@@ -84,5 +84,6 @@ model QuoteItem {
   quote    Quote  @relation(fields: [quote_id], references: [id], onDelete: Cascade)
   code     String
   name     String
-  price    Int    @default(0)
+  price    Float  @default(0)
+  amount   Float  @default(0)
 }

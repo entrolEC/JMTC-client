@@ -5,11 +5,11 @@ import { Item } from "@prisma/client";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useCallback, useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button as ShadcnButton } from "@/components/ui/button";
 import { Button } from "@/app/ui/button";
 import { createQuotationItem } from "@/app/lib/quotations/items/actions";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
 export default function QuotationItemCreateForm({ items, quotationId }: { items: Item[]; quotationId: string }) {
     const [open, setOpen] = useState(false);
@@ -37,7 +37,7 @@ export default function QuotationItemCreateForm({ items, quotationId }: { items:
                         <PopoverTrigger asChild>
                             <ShadcnButton role="combobox" aria-expanded={open} className="w-[200px] justify-between">
                                 {value ? selections.find((selection) => selection.value === value)?.label : "아이템 선택..."}
-                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </ShadcnButton>
                         </PopoverTrigger>
                         <PopoverContent className="w-[200px] p-0">
@@ -54,7 +54,7 @@ export default function QuotationItemCreateForm({ items, quotationId }: { items:
                                                 setOpen(false);
                                             }}
                                         >
-                                            <Check className={cn("mr-2 h-4 w-4", value === selection.value ? "opacity-100" : "opacity-0")} />
+                                            <CheckIcon className={cn("ml-auto h-4 w-4", value === selection.value ? "opacity-100" : "opacity-0")} />
                                             {selection.label}
                                         </CommandItem>
                                     ))}

@@ -11,24 +11,21 @@ export default function ItemsTable({ items }: { items: Item[] }) {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="px-4 py-5 font-medium sm:pl-6">코드</TableHead>
-                                <TableHead className="px-3 py-5 font-medium">이름</TableHead>
-                                <TableHead className="px-3 py-5 font-medium">생성일</TableHead>
-                                <TableHead className="relative py-3 pl-6 pr-3">
+                                <TableHead>코드</TableHead>
+                                <TableHead>이름</TableHead>
+                                <TableHead>생성일</TableHead>
+                                <TableHead>
                                     <span className="sr-only">Edit</span>
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {items?.map((item) => (
-                                <TableRow
-                                    key={item.id}
-                                    className="border-b text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-                                >
-                                    <TableCell className="whitespace-nowrap px-5 py-3">{item.code}</TableCell>
-                                    <TableCell className="whitespace-nowrap px-3 py-3">{item.name}</TableCell>
-                                    <TableCell className="whitespace-nowrap px-3 py-3">{formatDateToLocal(item.createdAt)}</TableCell>
-                                    <TableCell className="whitespace-nowrap py-3 pl-6 pr-3">
+                                <TableRow key={item.id}>
+                                    <TableCell>{item.code}</TableCell>
+                                    <TableCell>{item.name}</TableCell>
+                                    <TableCell>{formatDateToLocal(item.createdAt)}</TableCell>
+                                    <TableCell>
                                         <div className="flex justify-end gap-3">
                                             <UpdateItem id={item.id} />
                                             <DeleteItem id={item.id} />
