@@ -12,9 +12,12 @@ export default function ItemsTable({ items }: { items: Item[] }) {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>코드</TableHead>
-                                <TableHead>이름</TableHead>
-                                <TableHead>생성일</TableHead>
-                                <TableHead>
+                                <TableHead className="min-w-[120px]">이름</TableHead>
+                                <TableHead>U/T</TableHead>
+                                <TableHead>value</TableHead>
+                                <TableHead>VAT</TableHead>
+                                <TableHead className="text-right">생성일</TableHead>
+                                <TableHead className="text-right">
                                     <span className="sr-only">Edit</span>
                                 </TableHead>
                             </TableRow>
@@ -22,9 +25,12 @@ export default function ItemsTable({ items }: { items: Item[] }) {
                         <TableBody>
                             {items?.map((item) => (
                                 <TableRow key={item.id}>
-                                    <TableCell>{item.code}</TableCell>
+                                    <TableCell className="font-bold">{item.code}</TableCell>
                                     <TableCell>{item.name}</TableCell>
-                                    <TableCell>{formatDateToLocal(item.createdAt)}</TableCell>
+                                    <TableCell>{item.unitType}</TableCell>
+                                    <TableCell>{item.value}</TableCell>
+                                    <TableCell>{item.vat.toString()}</TableCell>
+                                    <TableCell className="text-right">{formatDateToLocal(item.createdAt)}</TableCell>
                                     <TableCell>
                                         <div className="flex justify-end gap-3">
                                             <UpdateItem id={item.id} />

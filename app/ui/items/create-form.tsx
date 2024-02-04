@@ -64,7 +64,7 @@ export default function ItemCreateForm() {
             </div>
             <div className="mb-4">
                 <label htmlFor="value" className="mb-2 block text-sm font-medium">
-                    {"값 (R.T / CBM / KG / Q'Y)"}
+                    {"value (R.T / CBM / KG / Q'Y)"}
                 </label>
                 <div className="relative mt-2 rounded-md">
                     <div className="relative">
