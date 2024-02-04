@@ -78,16 +78,18 @@ export async function updateItem(id: string, prevState: State, formData: FormDat
     const validatedFields = UpdateItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
+        unitType: formData.get("unit_type"),
+        vat: formData.get("vat"),
     });
 
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
-            message: "Missing Fields. Failed to Update Invoice.",
+            message: "Missing Fields. Failed to Update Item.",
         };
     }
 
-    const { code, name } = validatedFields.data;
+    const { code, name, unitType, vat } = validatedFields.data;
 
     // Update the database record using Prisma
     try {
@@ -96,6 +98,8 @@ export async function updateItem(id: string, prevState: State, formData: FormDat
             data: {
                 code: code,
                 name: name,
+                unitType: unitType,
+                vat: vat,
             },
         });
     } catch (error) {
