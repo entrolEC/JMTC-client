@@ -13,10 +13,10 @@ import { Button } from "@/components/ui/button";
 
 export default function QuotationEditForm({ quotation, currencies }: { quotation: Quote; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
-    const updateQuotationWithId = updateQuotation.bind(null, quotation.id);
+    const [currency, setCurrency] = useState<string | undefined>(quotation.currency);
+    const updateQuotationWithId = updateQuotation.bind(null, quotation.id, currency);
     const [state, dispatch] = useFormState(updateQuotationWithId, initialState);
     const [open, setOpen] = useState(false);
-    const [currency, setCurrency] = useState<string | undefined>(quotation.currency);
 
     const selections = currencies.map((currency) => ({
         label: `${currency.code}`,
@@ -150,7 +150,7 @@ export default function QuotationEditForm({ quotation, currencies }: { quotation
                 </div>
             </div>
             <div className="mt-6 flex justify-end gap-4">
-                <Button type="submit">아이템 생성</Button>
+                <Button type="submit">견적서 수정</Button>
             </div>
         </form>
     );

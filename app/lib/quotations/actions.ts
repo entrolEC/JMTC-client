@@ -16,7 +16,7 @@ const FormSchema = z.object({
 });
 
 const CreateQuotation = FormSchema.omit({ id: true, date: true, writer: true });
-const UpdateQuotation = FormSchema.omit({ date: true, id: true });
+const UpdateQuotation = FormSchema.omit({ date: true, id: true, writer: true });
 
 // This is temporary
 export type State = {
@@ -33,7 +33,6 @@ export async function createQuotation(_currency: string | undefined, prevState: 
     const session = await auth();
     // Validate form fields using Zod
     const validatedFields = CreateQuotation.safeParse({
-        gWeight: formData.get("g_weight"),
         manager: formData.get("manager"),
         value: formData.get("value"),
         currency: _currency,
@@ -86,20 +85,22 @@ export async function createQuotation(_currency: string | undefined, prevState: 
     redirect("/dashboard/quotations");
 }
 
-export async function updateQuotation(id: string, prevState: State, formData: FormData) {
+export async function updateQuotation(id: string, _currency: string | undefined, prevState: State, formData: FormData) {
     const validatedFields = UpdateQuotation.safeParse({
-        value: formData.get("value"),
         manager: formData.get("manager"),
+        value: formData.get("value"),
+        currency: _currency,
+        exchangeRate: formData.get("exchange_rate"),
     });
 
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
-            message: "Missing Fields. Failed to Update Invoice.",
+            message: "Missing Fields. Failed to Update Quotation.",
         };
     }
 
-    const { value, manager } = validatedFields.data;
+    const { value, manager, currency, exchangeRate } = validatedFields.data;
 
     // Update the database record using Prisma
     try {
@@ -108,6 +109,8 @@ export async function updateQuotation(id: string, prevState: State, formData: Fo
             data: {
                 value: value,
                 manager: manager,
+                currency: currency,
+                exchangeRate: exchangeRate,
             },
         });
     } catch (error) {
