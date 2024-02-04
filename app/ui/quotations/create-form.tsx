@@ -15,8 +15,8 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
     const initialState = { message: null, errors: {} };
 
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState<string>();
-    const createQuotationWithCurrency = createQuotation.bind(null, value);
+    const [currency, setCurrency] = useState<string>();
+    const createQuotationWithCurrency = createQuotation.bind(null, currency);
     const [state, dispatch] = useFormState(createQuotationWithCurrency, initialState);
 
     const selections = currencies.map((currency) => ({
@@ -35,7 +35,7 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
                         <Popover open={open} onOpenChange={setOpen}>
                             <PopoverTrigger asChild>
                                 <Button name="currency" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
-                                    {value ? selections.find((selection) => selection.value.code === value)?.label : "아이템 선택...."}
+                                    {currency ? selections.find((selection) => selection.value.code === currency)?.label : "아이템 선택...."}
                                     <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                             </PopoverTrigger>
@@ -49,12 +49,12 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
                                                 key={selection.value.id}
                                                 value={selection.value.code}
                                                 onSelect={(currentValue) => {
-                                                    setValue(currentValue === value ? undefined : currentValue.toUpperCase());
+                                                    setCurrency(currentValue === currency ? undefined : currentValue.toUpperCase());
                                                     setOpen(false);
                                                 }}
                                             >
                                                 <CheckIcon
-                                                    className={cn("ml-auto h-4 w-4", value === selection.value.code ? "opacity-100" : "opacity-0")}
+                                                    className={cn("ml-auto h-4 w-4", currency === selection.value.code ? "opacity-100" : "opacity-0")}
                                                 />
                                                 {selection.label}
                                             </CommandItem>

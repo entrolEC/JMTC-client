@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { fetchQuotationById } from "@/app/lib/quotations/data";
 import QuotationEditForm from "@/app/ui/quotations/edit-form";
+import { fetchCurrencies } from "@/app/lib/data";
 
 export const metadata: Metadata = {
     title: "Edit Item",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-    const [quotation] = await Promise.all([fetchQuotationById(id)]);
+    const [quotation, currencies] = await Promise.all([fetchQuotationById(id), fetchCurrencies()]);
 
     if (!quotation) {
         notFound();
@@ -28,7 +29,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                     },
                 ]}
             />
-            <QuotationEditForm quotation={quotation} />
+            <QuotationEditForm quotation={quotation} currencies={currencies} />
         </main>
     );
 }
