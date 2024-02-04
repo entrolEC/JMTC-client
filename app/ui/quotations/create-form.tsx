@@ -98,23 +98,25 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
                     </div>
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="g_weight" className="mb-2 block text-sm font-medium">
-                        g.weight
+                    <label htmlFor="value" className="mb-2 block text-sm font-medium">
+                        value
                     </label>
                     <div className="relative mt-2 rounded-md">
-                        <Input
-                            id="g_weight"
-                            name="g_weight"
-                            type="number"
-                            step={0.01}
-                            placeholder="g.weight를 입력해주세요."
-                            aria-describedby="g_weight-error"
-                        />
+                        <div className="relative">
+                            <Input
+                                id="value"
+                                name="value"
+                                type="number"
+                                step={0.01}
+                                placeholder="value를 입력하세요."
+                                aria-describedby="price-error"
+                            />
+                        </div>
                     </div>
 
-                    <div id="g_weight-error" aria-live="polite" aria-atomic="true">
-                        {state.errors?.gWeight &&
-                            state.errors.gWeight.map((error: string) => (
+                    <div id="price-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.value &&
+                            state.errors.value.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>
                                     {error}
                                 </p>

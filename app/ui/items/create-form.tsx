@@ -51,25 +51,6 @@ export default function ItemCreateForm() {
                 </div>
             </div>
             <div className="mb-4">
-                <label htmlFor="value" className="mb-2 block text-sm font-medium">
-                    {"value (R.T / CBM / KG / Q'Y)"}
-                </label>
-                <div className="relative mt-2 rounded-md">
-                    <div className="relative">
-                        <Input id="value" name="value" type="number" step={0.01} placeholder="value를 입력하세요." aria-describedby="name-error" />
-                    </div>
-                </div>
-
-                <div id="name-error" aria-live="polite" aria-atomic="true">
-                    {state.errors?.value &&
-                        state.errors.value.map((error: string) => (
-                            <p className="mt-2 text-sm text-red-500" key={error}>
-                                {error}
-                            </p>
-                        ))}
-                </div>
-            </div>
-            <div className="mb-4">
                 <Select name="unit_type" aria-describedby="unitType-error">
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="UnitType 선택.." />

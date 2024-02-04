@@ -9,6 +9,7 @@ const FormSchema = z.object({
     id: z.string(),
     code: z.string().min(1, "Please type a code"),
     name: z.string().min(1, "Please type a name"),
+    unitType: z.string().min(1, "Please select a unitType"),
     value: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
     currency: z.string(),
     price: z.coerce.number(),
@@ -22,6 +23,7 @@ export type State = {
     errors?: {
         code?: string[];
         name?: string[];
+        unitType?: string[];
         value?: string[];
         currency?: string[];
         price?: string[];
@@ -34,6 +36,7 @@ export async function createQuotationItem(quotationId: string, _currency: string
     const validatedFields = CreateQuotationItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
+        unitType: formData.get("unit_type"),
         value: formData.get("value"),
         currency: _currency,
         price: formData.get("price"),
@@ -48,7 +51,7 @@ export async function createQuotationItem(quotationId: string, _currency: string
     }
 
     // Prepare data for insertion into the database
-    const { code, name, value, currency, price } = validatedFields.data;
+    const { code, name, unitType, value, currency, price } = validatedFields.data;
 
     const amount = value * price;
     const vat = Math.floor(amount * 100) / 100;
@@ -60,6 +63,7 @@ export async function createQuotationItem(quotationId: string, _currency: string
                 code: code,
                 name: name,
                 quote_id: quotationId,
+                unitType: unitType,
                 value: value,
                 currency: currency,
                 price: price,

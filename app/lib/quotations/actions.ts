@@ -8,7 +8,7 @@ import { auth, signOut } from "@/auth";
 
 const FormSchema = z.object({
     id: z.string(),
-    gWeight: z.coerce.number(),
+    value: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
     manager: z.string().min(1, "Please type a manager"),
     writer: z.string(),
     currency: z.string(),
@@ -21,7 +21,7 @@ const UpdateQuotation = FormSchema.omit({ date: true, id: true });
 // This is temporary
 export type State = {
     errors?: {
-        gWeight?: string[];
+        value?: string[];
         manager?: string[];
         currency?: string[];
         exchangeRate?: string[];
@@ -35,6 +35,7 @@ export async function createQuotation(_currency: string | undefined, prevState: 
     const validatedFields = CreateQuotation.safeParse({
         gWeight: formData.get("g_weight"),
         manager: formData.get("manager"),
+        value: formData.get("value"),
         currency: _currency,
         exchangeRate: formData.get("exchange_rate"),
     });
@@ -55,13 +56,13 @@ export async function createQuotation(_currency: string | undefined, prevState: 
     }
 
     // Prepare data for insertion into the database
-    const { manager, gWeight, currency, exchangeRate } = validatedFields.data;
+    const { manager, value, currency, exchangeRate } = validatedFields.data;
 
     // Insert data into the database using Prisma
     try {
         await prisma.quote.create({
             data: {
-                gWeight: gWeight,
+                value: value,
                 manager: manager,
                 writer: session.user.name,
                 currency: currency,
@@ -87,7 +88,7 @@ export async function createQuotation(_currency: string | undefined, prevState: 
 
 export async function updateQuotation(id: string, prevState: State, formData: FormData) {
     const validatedFields = UpdateQuotation.safeParse({
-        gWeight: formData.get("g_weight"),
+        value: formData.get("value"),
         manager: formData.get("manager"),
     });
 
@@ -98,14 +99,14 @@ export async function updateQuotation(id: string, prevState: State, formData: Fo
         };
     }
 
-    const { gWeight, manager } = validatedFields.data;
+    const { value, manager } = validatedFields.data;
 
     // Update the database record using Prisma
     try {
         await prisma.quote.update({
             where: { id: id },
             data: {
-                gWeight: gWeight,
+                value: value,
                 manager: manager,
             },
         });

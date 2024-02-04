@@ -10,7 +10,6 @@ const FormSchema = z.object({
     code: z.string().min(1, "코드를 입력해주세요."),
     name: z.string().min(1, "이름을 입력해주세요."),
     unitType: z.string(),
-    value: z.coerce.number().gt(0, { message: "최소 0보다 큰 값을 입력해야 합니다." }),
     vat: z.coerce.boolean(),
 });
 
@@ -22,7 +21,6 @@ export type State = {
     errors?: {
         code?: string[];
         name?: string[];
-        value?: string[];
         unitType?: string[];
         vat?: string[];
     };
@@ -34,7 +32,6 @@ export async function createItem(prevState: State, formData: FormData) {
     const validatedFields = CreateItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
-        value: formData.get("value"),
         unitType: formData.get("unit_type"),
         vat: formData.get("vat"),
     });
@@ -48,7 +45,7 @@ export async function createItem(prevState: State, formData: FormData) {
     }
 
     // Prepare data for insertion into the database
-    const { code, name, value, unitType, vat } = validatedFields.data;
+    const { code, name, unitType, vat } = validatedFields.data;
 
     // Insert data into the database using Prisma
     try {
@@ -56,7 +53,6 @@ export async function createItem(prevState: State, formData: FormData) {
             data: {
                 code: code,
                 name: name,
-                value: value,
                 unitType: unitType,
                 vat: vat,
             },

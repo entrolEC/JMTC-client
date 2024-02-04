@@ -12,6 +12,12 @@ export default function QuotationItemsTable({ quotationItems }: { quotationItems
                 <TableRow>
                     <TableHead>코드</TableHead>
                     <TableHead>이름</TableHead>
+                    <TableHead>U/T</TableHead>
+                    <TableHead>value</TableHead>
+                    <TableHead>통화</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>VAT</TableHead>
                     <TableHead>
                         <span className="sr-only">Edit</span>
                     </TableHead>
@@ -20,8 +26,14 @@ export default function QuotationItemsTable({ quotationItems }: { quotationItems
             <TableBody>
                 {quotationItems?.map((quotationItem) => (
                     <TableRow key={quotationItem.id}>
-                        <TableCell>{quotationItem.code}</TableCell>
+                        <TableCell className="font-bold">{quotationItem.code}</TableCell>
                         <TableCell>{quotationItem.name}</TableCell>
+                        <TableCell>{quotationItem.unitType}</TableCell>
+                        <TableCell>{quotationItem.value}</TableCell>
+                        <TableCell>{quotationItem.currency}</TableCell>
+                        <TableCell>{quotationItem.price}</TableCell>
+                        <TableCell>{quotationItem.amount}</TableCell>
+                        <TableCell>{quotationItem.vat}</TableCell>
                         <TableCell>
                             <div className="flex justify-end gap-3">
                                 <UpdateQuotationItem quotationId={quotationItem.quote_id} id={quotationItem.id} />
@@ -33,7 +45,7 @@ export default function QuotationItemsTable({ quotationItems }: { quotationItems
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell colSpan={2}>Total</TableCell>
+                    <TableCell colSpan={8}>Total</TableCell>
                     <TableCell className="text-right">{formattedTotal}</TableCell>
                 </TableRow>
             </TableFooter>

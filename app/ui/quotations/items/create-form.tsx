@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { createQuotationItem } from "@/app/lib/quotations/items/actions";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function QuotationItemCreateForm({ items, quotation, currencies }: { items: Item[]; quotation: Quote; currencies: Currency[] }) {
     const [open, setOpen] = useState(false);
@@ -72,7 +73,7 @@ export default function QuotationItemCreateForm({ items, quotation, currencies }
 
 function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
-    const [value, setValue] = useState(item.value || 0);
+    const [value, setValue] = useState(quotation.value || 0);
     const [price, setPrice] = useState(0);
     const [amount, setAmount] = useState(0);
     const [open, setOpen] = useState(false);
@@ -127,6 +128,31 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
                     <div id="name-error" aria-live="polite" aria-atomic="true">
                         {state.errors?.name &&
                             state.errors.name.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <Select name="unit_type" aria-describedby="unitType-error" defaultValue={item.unitType}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="UnitType 선택.." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="CBM">CBM</SelectItem>
+                            <SelectItem value="R.T">R.T</SelectItem>
+                            <SelectItem value="BL">BL</SelectItem>
+                            <SelectItem value="KG">KG</SelectItem>
+                            <SelectItem value="40`">40`</SelectItem>
+                            <SelectItem value="20`">20`</SelectItem>
+                            <SelectItem value="SHIP">SHIP</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <div id="customer-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.unitType &&
+                            state.errors.unitType.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>
                                     {error}
                                 </p>
