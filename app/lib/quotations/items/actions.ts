@@ -9,6 +9,9 @@ const FormSchema = z.object({
     id: z.string(),
     code: z.string().min(1, "Please type a code"),
     name: z.string().min(1, "Please type a name"),
+    value: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
+    currency: z.string(),
+    price: z.coerce.number(),
 });
 
 const CreateQuotationItem = FormSchema.omit({ id: true });
@@ -19,15 +22,21 @@ export type State = {
     errors?: {
         code?: string[];
         name?: string[];
+        value?: string[];
+        currency?: string[];
+        price?: string[];
     };
     message?: string | null;
 };
 
-export async function createQuotationItem(quotationId: string, prevState: State, formData: FormData) {
+export async function createQuotationItem(quotationId: string, _currency: string | undefined, prevState: State, formData: FormData) {
     // Validate form fields using Zod
     const validatedFields = CreateQuotationItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
+        value: formData.get("value"),
+        currency: _currency,
+        price: formData.get("price"),
     });
 
     // If form validation fails, return errors early. Otherwise, continue.
@@ -39,7 +48,10 @@ export async function createQuotationItem(quotationId: string, prevState: State,
     }
 
     // Prepare data for insertion into the database
-    const { code, name } = validatedFields.data;
+    const { code, name, value, currency, price } = validatedFields.data;
+
+    const amount = value * price;
+    const vat = Math.floor(amount * 100) / 100;
 
     // Insert data into the database using Prisma
     try {
@@ -48,6 +60,11 @@ export async function createQuotationItem(quotationId: string, prevState: State,
                 code: code,
                 name: name,
                 quote_id: quotationId,
+                value: value,
+                currency: currency,
+                price: price,
+                amount: amount,
+                vat: vat,
             },
         });
     } catch (error: any) {

@@ -1,14 +1,21 @@
 import Modal from "@/app/ui/modal";
 import QuotationItemCreateForm from "@/app/ui/quotations/items/create-form";
 import { fetchItems } from "@/app/lib/items/data";
+import { fetchQuotationById } from "@/app/lib/quotations/data";
+import { fetchCurrencies } from "@/app/lib/data";
+import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string } }) {
     const { id } = params;
-    const items = await fetchItems();
+    const [items, quotation, currencies] = await Promise.all([fetchItems(), fetchQuotationById(id), fetchCurrencies()]);
+
+    if (!quotation) {
+        notFound();
+    }
 
     return (
         <Modal>
-            <QuotationItemCreateForm quotationId={id} items={items} />
+            <QuotationItemCreateForm quotation={quotation} items={items} currencies={currencies} />
         </Modal>
     );
 }

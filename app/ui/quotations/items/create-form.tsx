@@ -1,17 +1,18 @@
 "use client";
 
 import { useFormState } from "react-dom";
-import { Item } from "@prisma/client";
+import { Currency, Item, Quote } from "@prisma/client";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button as ShadcnButton } from "@/components/ui/button";
-import { Button } from "@/app/ui/button";
+import { Button } from "@/components/ui/button";
+
 import { createQuotationItem } from "@/app/lib/quotations/items/actions";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { Input } from "@/components/ui/input";
 
-export default function QuotationItemCreateForm({ items, quotationId }: { items: Item[]; quotationId: string }) {
+export default function QuotationItemCreateForm({ items, quotation, currencies }: { items: Item[]; quotation: Quote; currencies: Currency[] }) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState<Item>();
     const selections = items.map((item) => ({
@@ -35,10 +36,10 @@ export default function QuotationItemCreateForm({ items, quotationId }: { items:
                 <div className="relative">
                     <Popover open={open} onOpenChange={setOpen}>
                         <PopoverTrigger asChild>
-                            <ShadcnButton role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                            <Button role="combobox" aria-expanded={open} className="w-[200px] justify-between">
                                 {value ? selections.find((selection) => selection.value === value)?.label : "아이템 선택..."}
                                 <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </ShadcnButton>
+                            </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[200px] p-0">
                             <Command>
@@ -64,15 +65,33 @@ export default function QuotationItemCreateForm({ items, quotationId }: { items:
                     </Popover>
                 </div>
             </div>
-            {value && <Form key={value.id} item={value} quotationId={quotationId} />}
+            {value && <Form key={value.id} item={value} quotation={quotation} currencies={currencies} />}
         </div>
     );
 }
 
-function Form({ item, quotationId }: { item: Item; quotationId: string }) {
+function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
-    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotationId);
+    const [value, setValue] = useState(item.value || 0);
+    const [price, setPrice] = useState(0);
+    const [amount, setAmount] = useState(0);
+    const [open, setOpen] = useState(false);
+    const [currency, setCurrency] = useState<string>();
+    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation.id, currency);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
+
+    const selections = currencies.map((currency) => ({
+        label: `${currency.code}`,
+        value: currency,
+    }));
+
+    useEffect(() => {
+        setAmount(value * price);
+    }, [value, price]);
+
+    useEffect(() => {
+        setCurrency(quotation.currency);
+    }, [quotation]);
 
     return (
         <form action={dispatch}>
@@ -82,15 +101,7 @@ function Form({ item, quotationId }: { item: Item; quotationId: string }) {
                         코드
                     </label>
                     <div className="relative mt-2 rounded-md">
-                        <input
-                            id="code"
-                            name="code"
-                            readOnly
-                            value={item.code}
-                            placeholder="코드를 입력해주세요."
-                            className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
-                            aria-describedby="code-error"
-                        />
+                        <Input id="code" name="code" readOnly value={item.code} placeholder="코드를 입력해주세요." aria-describedby="code-error" />
                     </div>
 
                     <div id="code-error" aria-live="polite" aria-atomic="true">
@@ -109,14 +120,7 @@ function Form({ item, quotationId }: { item: Item; quotationId: string }) {
                     </label>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
-                            <input
-                                id="name"
-                                name="name"
-                                defaultValue={item.name}
-                                placeholder="이름을 입력하세요."
-                                className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
-                                aria-describedby="name-error"
-                            />
+                            <Input id="name" name="name" defaultValue={item.name} placeholder="이름을 입력하세요." aria-describedby="name-error" />
                         </div>
                     </div>
 
@@ -127,6 +131,141 @@ function Form({ item, quotationId }: { item: Item; quotationId: string }) {
                                     {error}
                                 </p>
                             ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="value" className="mb-2 block text-sm font-medium">
+                        value
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input
+                                id="value"
+                                name="value"
+                                type="number"
+                                step={0.01}
+                                value={value}
+                                onChange={(e) => setValue(parseFloat(e.target.value))}
+                                placeholder="value를 입력하세요."
+                                aria-describedby="price-error"
+                            />
+                        </div>
+                    </div>
+
+                    <div id="price-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.value &&
+                            state.errors.value.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="currency" className="mb-2 block text-sm font-medium">
+                        통화 선택
+                    </label>
+                    <div className="relative">
+                        <Popover open={open} onOpenChange={setOpen}>
+                            <PopoverTrigger asChild>
+                                <Button name="currency" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                                    {currency ? selections.find((selection) => selection.value.code === currency)?.label : "아이템 선택...."}
+                                    <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-0">
+                                <Command>
+                                    <CommandInput placeholder="아이템 선택..." />
+                                    <CommandEmpty>No item found.</CommandEmpty>
+                                    <CommandGroup>
+                                        {selections.map((selection) => (
+                                            <CommandItem
+                                                key={selection.value.id}
+                                                value={selection.value.code}
+                                                onSelect={(currentValue) => {
+                                                    setCurrency(currentValue === currency ? undefined : currentValue.toUpperCase());
+                                                    setOpen(false);
+                                                }}
+                                            >
+                                                <CheckIcon
+                                                    className={cn("ml-auto h-4 w-4", currency === selection.value.code ? "opacity-100" : "opacity-0")}
+                                                />
+                                                {selection.label}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                    <div id="currency-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.currency &&
+                            state.errors.currency.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="price" className="mb-2 block text-sm font-medium">
+                        price
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input
+                                id="price"
+                                name="price"
+                                type="number"
+                                step={0.01}
+                                value={price}
+                                onChange={(e) => setPrice(parseFloat(e.target.value))}
+                                placeholder="price를 입력하세요."
+                                aria-describedby="price-error"
+                            />
+                        </div>
+                    </div>
+
+                    <div id="price-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.price &&
+                            state.errors.price.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+                        amount
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input id="amount" name="amount" type="number" value={amount} step={0.01} readOnly aria-describedby="amount-error" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="vat" className="mb-2 block text-sm font-medium">
+                        VAT
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input
+                                id="vat"
+                                name="vat"
+                                type="number"
+                                value={(amount / 10).toFixed(2)}
+                                step={0.01}
+                                readOnly
+                                aria-describedby="vat-error"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

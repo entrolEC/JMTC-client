@@ -18,13 +18,7 @@ export default function ItemCreateForm() {
                     코드
                 </label>
                 <div className="relative mt-2 rounded-md">
-                    <Input
-                        id="code"
-                        name="code"
-                        placeholder="코드를 입력해주세요."
-                        className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
-                        aria-describedby="code-error"
-                    />
+                    <Input id="code" name="code" placeholder="코드를 입력해주세요." aria-describedby="code-error" />
                 </div>
 
                 <div id="code-error" aria-live="polite" aria-atomic="true">
@@ -43,13 +37,7 @@ export default function ItemCreateForm() {
                 </label>
                 <div className="relative mt-2 rounded-md">
                     <div className="relative">
-                        <Input
-                            id="name"
-                            name="name"
-                            placeholder="이름을 입력하세요."
-                            className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
-                            aria-describedby="name-error"
-                        />
+                        <Input id="name" name="name" placeholder="이름을 입력하세요." aria-describedby="name-error" />
                     </div>
                 </div>
 
@@ -68,15 +56,7 @@ export default function ItemCreateForm() {
                 </label>
                 <div className="relative mt-2 rounded-md">
                     <div className="relative">
-                        <Input
-                            id="value"
-                            name="value"
-                            type="number"
-                            step={0.01}
-                            placeholder="value를 입력하세요."
-                            className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
-                            aria-describedby="name-error"
-                        />
+                        <Input id="value" name="value" type="number" step={0.01} placeholder="value를 입력하세요." aria-describedby="name-error" />
                     </div>
                 </div>
 
