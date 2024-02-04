@@ -54,7 +54,7 @@ model Quote {
   id           String      @id @default(uuid())
   writer       String
   manager      String
-  gWeight      Float
+  unit         Float       @default(1)
   currency     String
   exchangeRate Float
   items        Item[]
@@ -73,9 +73,10 @@ model Item {
   code      String   @unique
   quote     Quote[]
   name      String
-  unit      String   @default("")
-  count     Float    @default(0)
+  unitType  String   @default("")
+  value     Float    @default(0)
   createdAt DateTime @default(now())
+  vat       Boolean  @default(false)
 }
 
 model QuoteItem {
@@ -86,4 +87,6 @@ model QuoteItem {
   name     String
   price    Float  @default(0)
   amount   Float  @default(0)
+  currency String @default("")
+  vat      Float  @default(0)
 }
