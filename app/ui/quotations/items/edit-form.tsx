@@ -1,14 +1,47 @@
 "use client";
 
-import { Button } from "@/app/ui/button";
 import { useFormState } from "react-dom";
-import { QuoteItem } from "@prisma/client";
+import { Currency, Quote, QuoteItem } from "@prisma/client";
 import { updateQuotationItem } from "@/app/lib/quotations/items/actions";
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
-export default function QuotationItemEditForm({ quotationItem, quotationId }: { quotationItem: QuoteItem; quotationId: string }) {
+export default function QuotationItemEditForm({
+    quotationItem,
+    quotation,
+    currencies,
+}: {
+    quotationItem: QuoteItem;
+    quotation: Quote;
+    currencies: Currency[];
+}) {
     const initialState = { message: null, errors: {} };
-    const updateQuotationItemWithId = updateQuotationItem.bind(null, quotationId, quotationItem.id);
-    const [state, dispatch] = useFormState(updateQuotationItemWithId, initialState);
+    const [value, setValue] = useState(quotation.value || 0);
+    const [price, setPrice] = useState(quotationItem.price);
+    const [amount, setAmount] = useState(quotationItem.amount);
+    const [open, setOpen] = useState(false);
+    const [currency, setCurrency] = useState<string | undefined>(quotation.currency);
+    const createQuotationItemWithQuotationId = updateQuotationItem.bind(null, quotation.id, quotationItem.id, currency);
+    const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
+
+    const selections = currencies.map((currency) => ({
+        label: `${currency.code}`,
+        value: currency,
+    }));
+
+    useEffect(() => {
+        setAmount(value * price);
+    }, [value, price]);
+
+    useEffect(() => {
+        setCurrency(quotation.currency);
+    }, [quotation]);
 
     return (
         <form action={dispatch}>
@@ -18,13 +51,12 @@ export default function QuotationItemEditForm({ quotationItem, quotationId }: { 
                         코드
                     </label>
                     <div className="relative mt-2 rounded-md">
-                        <input
+                        <Input
                             id="code"
                             name="code"
                             readOnly
-                            defaultValue={quotationItem.code}
+                            value={quotationItem.code}
                             placeholder="코드를 입력해주세요."
-                            className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                             aria-describedby="code-error"
                         />
                     </div>
@@ -45,12 +77,11 @@ export default function QuotationItemEditForm({ quotationItem, quotationId }: { 
                     </label>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
-                            <input
+                            <Input
                                 id="name"
                                 name="name"
                                 defaultValue={quotationItem.name}
                                 placeholder="이름을 입력하세요."
-                                className="px-2 peer block w-full rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="name-error"
                             />
                         </div>
@@ -63,6 +94,166 @@ export default function QuotationItemEditForm({ quotationItem, quotationId }: { 
                                     {error}
                                 </p>
                             ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <Select name="unit_type" aria-describedby="unitType-error" defaultValue={quotationItem.unitType}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="UnitType 선택.." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="CBM">CBM</SelectItem>
+                            <SelectItem value="R.T">R.T</SelectItem>
+                            <SelectItem value="BL">BL</SelectItem>
+                            <SelectItem value="KG">KG</SelectItem>
+                            <SelectItem value="40`">40`</SelectItem>
+                            <SelectItem value="20`">20`</SelectItem>
+                            <SelectItem value="SHIP">SHIP</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <div id="customer-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.unitType &&
+                            state.errors.unitType.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="value" className="mb-2 block text-sm font-medium">
+                        value
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input
+                                id="value"
+                                name="value"
+                                type="number"
+                                step={0.01}
+                                value={value}
+                                onChange={(e) => setValue(parseFloat(e.target.value))}
+                                placeholder="value를 입력하세요."
+                                aria-describedby="price-error"
+                            />
+                        </div>
+                    </div>
+
+                    <div id="price-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.value &&
+                            state.errors.value.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="currency" className="mb-2 block text-sm font-medium">
+                        통화 선택
+                    </label>
+                    <div className="relative">
+                        <Popover open={open} onOpenChange={setOpen}>
+                            <PopoverTrigger asChild>
+                                <Button name="currency" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                                    {currency ? selections.find((selection) => selection.value.code === currency)?.label : "아이템 선택...."}
+                                    <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-0">
+                                <Command>
+                                    <CommandInput placeholder="아이템 선택..." />
+                                    <CommandEmpty>No item found.</CommandEmpty>
+                                    <CommandGroup>
+                                        {selections.map((selection) => (
+                                            <CommandItem
+                                                key={selection.value.id}
+                                                value={selection.value.code}
+                                                onSelect={(currentValue) => {
+                                                    setCurrency(currentValue === currency ? undefined : currentValue.toUpperCase());
+                                                    setOpen(false);
+                                                }}
+                                            >
+                                                <CheckIcon
+                                                    className={cn("ml-auto h-4 w-4", currency === selection.value.code ? "opacity-100" : "opacity-0")}
+                                                />
+                                                {selection.label}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                    <div id="currency-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.currency &&
+                            state.errors.currency.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="price" className="mb-2 block text-sm font-medium">
+                        price
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input
+                                id="price"
+                                name="price"
+                                type="number"
+                                step={0.01}
+                                value={price}
+                                onChange={(e) => setPrice(parseFloat(e.target.value))}
+                                placeholder="price를 입력하세요."
+                                aria-describedby="price-error"
+                            />
+                        </div>
+                    </div>
+
+                    <div id="price-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.price &&
+                            state.errors.price.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+                        amount
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input id="amount" name="amount" type="number" value={amount} step={0.01} readOnly aria-describedby="amount-error" />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="vat" className="mb-2 block text-sm font-medium">
+                        VAT
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input
+                                id="vat"
+                                name="vat"
+                                type="number"
+                                value={(amount / 10).toFixed(2)}
+                                step={0.01}
+                                readOnly
+                                aria-describedby="vat-error"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

@@ -81,10 +81,14 @@ export async function createQuotationItem(quotationId: string, _currency: string
     redirect(`/dashboard/quotations/${quotationId}`);
 }
 
-export async function updateQuotationItem(quotationId: string, id: string, prevState: State, formData: FormData) {
+export async function updateQuotationItem(quotationId: string, id: string, _currency: string | undefined, prevState: State, formData: FormData) {
     const validatedFields = UpdateQuotationItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
+        unitType: formData.get("unit_type"),
+        value: formData.get("value"),
+        currency: _currency,
+        price: formData.get("price"),
     });
 
     if (!validatedFields.success) {
@@ -94,7 +98,10 @@ export async function updateQuotationItem(quotationId: string, id: string, prevS
         };
     }
 
-    const { code, name } = validatedFields.data;
+    const { code, name, unitType, value, currency, price } = validatedFields.data;
+
+    const amount = value * price;
+    const vat = Math.floor(amount * 100) / 100;
 
     // Update the database record using Prisma
     try {
@@ -103,6 +110,13 @@ export async function updateQuotationItem(quotationId: string, id: string, prevS
             data: {
                 code: code,
                 name: name,
+                quote_id: quotationId,
+                unitType: unitType,
+                value: value,
+                currency: currency,
+                price: price,
+                amount: amount,
+                vat: vat,
             },
         });
     } catch (error) {
