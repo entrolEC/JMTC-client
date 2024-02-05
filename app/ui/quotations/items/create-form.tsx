@@ -87,8 +87,13 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
     }));
 
     useEffect(() => {
-        setAmount(value * price);
-    }, [value, price]);
+        const temp = value * price;
+        if (currency === "KRW") {
+            setAmount(temp);
+        } else {
+            setAmount(temp * quotation.exchangeRate);
+        }
+    }, [value, price, currency]);
 
     useEffect(() => {
         setCurrency(quotation.currency);
