@@ -52,6 +52,8 @@ model Revenue {
 // * pod: 수입지역
 model Quote {
   id           String      @id @default(uuid())
+  mode         String      @default("ocean")
+  grossWeight  Float?
   writer       String
   manager      String
   value        Float

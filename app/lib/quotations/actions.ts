@@ -8,23 +8,27 @@ import { auth, signOut } from "@/auth";
 
 const FormSchema = z.object({
     id: z.string(),
+    mode: z.enum(["OCEAN", "AIR"]),
     value: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
-    manager: z.string().min(1, "Please type a manager"),
+    manager: z.string().min(1, "담당자를 입력해주세요"),
+    grossWeight: z.nullable(z.coerce.number()),
     writer: z.string(),
     currency: z.string(),
     exchangeRate: z.coerce.number(),
 });
 
 const CreateQuotation = FormSchema.omit({ id: true, date: true, writer: true });
-const UpdateQuotation = FormSchema.omit({ date: true, id: true, writer: true });
+const UpdateQuotation = FormSchema.omit({ date: true, id: true, writer: true, mode: true });
 
 // This is temporary
 export type State = {
     errors?: {
+        mode?: string[];
         value?: string[];
         manager?: string[];
         currency?: string[];
         exchangeRate?: string[];
+        grossWeight?: string[];
     };
     message?: string | null;
 };
@@ -33,8 +37,10 @@ export async function createQuotation(_currency: string | undefined, prevState: 
     const session = await auth();
     // Validate form fields using Zod
     const validatedFields = CreateQuotation.safeParse({
+        mode: formData.get("mode"),
         manager: formData.get("manager"),
         value: formData.get("value"),
+        grossWeight: formData.get("grossWeight"),
         currency: _currency,
         exchangeRate: formData.get("exchange_rate"),
     });
@@ -55,12 +61,14 @@ export async function createQuotation(_currency: string | undefined, prevState: 
     }
 
     // Prepare data for insertion into the database
-    const { manager, value, currency, exchangeRate } = validatedFields.data;
+    const { mode, manager, value, grossWeight, currency, exchangeRate } = validatedFields.data;
 
     // Insert data into the database using Prisma
     try {
         await prisma.quote.create({
             data: {
+                mode: mode,
+                grossWeight: grossWeight,
                 value: value,
                 manager: manager,
                 writer: session.user.name,
@@ -87,6 +95,7 @@ export async function createQuotation(_currency: string | undefined, prevState: 
 
 export async function updateQuotation(id: string, _currency: string | undefined, prevState: State, formData: FormData) {
     const validatedFields = UpdateQuotation.safeParse({
+        grossWeight: formData.get("grossWeight"),
         manager: formData.get("manager"),
         value: formData.get("value"),
         currency: _currency,
@@ -100,13 +109,14 @@ export async function updateQuotation(id: string, _currency: string | undefined,
         };
     }
 
-    const { value, manager, currency, exchangeRate } = validatedFields.data;
+    const { value, manager, grossWeight, currency, exchangeRate } = validatedFields.data;
 
     // Update the database record using Prisma
     try {
         await prisma.quote.update({
             where: { id: id },
             data: {
+                grossWeight: grossWeight,
                 value: value,
                 manager: manager,
                 currency: currency,
@@ -114,7 +124,7 @@ export async function updateQuotation(id: string, _currency: string | undefined,
             },
         });
     } catch (error) {
-        return { message: "Database Error: Failed to Update Item." };
+        return { message: "Database Error: Failed to Update Quotation." };
     }
 
     revalidatePath("/dashboard/quotations");

@@ -10,6 +10,7 @@ import { useFormState } from "react-dom";
 import { createQuotation } from "@/app/lib/quotations/actions";
 import { Input } from "@/components/ui/input";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function QuotationCreateForm({ currencies }: { currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
@@ -28,6 +29,25 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
         <form action={dispatch}>
             <div className="rounded-md p-4 md:p-6">
                 <div className="mb-4">
+                    <Select name="mode" aria-describedby="mode-error">
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="mode 선택.." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="OCEAN">OCEAN</SelectItem>
+                            <SelectItem value="AIR">AIR</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <div id="mode-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.mode &&
+                            state.errors.mode.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+                <div className="mb-4">
                     <label htmlFor="currency" className="mb-2 block text-sm font-medium">
                         통화 선택
                     </label>
@@ -41,7 +61,7 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
                             </PopoverTrigger>
                             <PopoverContent className="w-[200px] p-0">
                                 <Command>
-                                    <CommandInput placeholder="아이템 선택..." />
+                                    <CommandInput placeholder="통화 선택..." />
                                     <CommandEmpty>No item found.</CommandEmpty>
                                     <CommandGroup>
                                         {selections.map((selection) => (
@@ -117,6 +137,33 @@ export default function QuotationCreateForm({ currencies }: { currencies: Curren
                     <div id="price-error" aria-live="polite" aria-atomic="true">
                         {state.errors?.value &&
                             state.errors.value.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="grossWeight" className="mb-2 block text-sm font-medium">
+                        GrossWeight
+                    </label>
+                    <div className="relative mt-2 rounded-md">
+                        <div className="relative">
+                            <Input
+                                id="grossWeight"
+                                name="grossWeight"
+                                type="number"
+                                step={0.01}
+                                placeholder="GrossWeight를 입력하세요. (필수 아님)"
+                                aria-describedby="price-error"
+                            />
+                        </div>
+                    </div>
+
+                    <div id="grossWeight-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.grossWeight &&
+                            state.errors.grossWeight.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>
                                     {error}
                                 </p>

@@ -11,6 +11,7 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                     <TableHead>담당자</TableHead>
                     <TableHead>작성자</TableHead>
                     <TableHead>value</TableHead>
+                    <TableHead>G.Weight</TableHead>
                     <TableHead>통화</TableHead>
                     <TableHead>환율</TableHead>
                     <TableHead>작성일</TableHead>
@@ -25,6 +26,7 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                         <TableCell>{quotation.manager}</TableCell>
                         <TableCell>{quotation.writer}</TableCell>
                         <TableCell>{quotation.value}</TableCell>
+                        <TableCell>{quotation.grossWeight ?? "-"}</TableCell>
                         <TableCell>{quotation.currency}</TableCell>
                         <TableCell>{quotation.exchangeRate}</TableCell>
                         <TableCell>{formatDateToLocal(quotation.createdAt)}</TableCell>
