@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/app/lib/prismaClient";
+import { Quote } from "@prisma/client";
 
 const FormSchema = z.object({
     id: z.string(),
@@ -31,13 +32,8 @@ export type State = {
     message?: string | null;
 };
 
-export async function createQuotationItem(
-    quotationId: string,
-    _currency: string | undefined,
-    exchangeRate: number,
-    prevState: State,
-    formData: FormData,
-) {
+export async function createQuotationItem(quotation: Quote, _currency: string | undefined, isVat: boolean, prevState: State, formData: FormData) {
+    const { id: quotationId, exchangeRate } = quotation;
     // Validate form fields using Zod
     const validatedFields = CreateQuotationItem.safeParse({
         code: formData.get("code"),
@@ -63,8 +59,12 @@ export async function createQuotationItem(
     if (currency !== "KRW") {
         amount *= exchangeRate;
     }
+
     const vatRate = 0.1;
-    const vat = Math.floor(amount * vatRate * 100) / 100;
+    let vat = 0;
+    if (isVat) {
+        vat = Math.floor(amount * vatRate * 100) / 100;
+    }
 
     // Insert data into the database using Prisma
     try {

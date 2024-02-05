@@ -37,13 +37,13 @@ export default function QuotationItemCreateForm({ items, quotation, currencies }
                 <div className="relative">
                     <Popover open={open} onOpenChange={setOpen}>
                         <PopoverTrigger asChild>
-                            <Button role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                            <Button role="combobox" aria-expanded={open} className="w-full justify-between">
                                 {value ? selections.find((selection) => selection.value === value)?.label : "아이템 선택..."}
                                 <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                            <Command>
+                        <PopoverContent className="w-full p-0">
+                            <Command className="w-full">
                                 <CommandInput placeholder="아이템 선택..." />
                                 <CommandEmpty>No item found.</CommandEmpty>
                                 <CommandGroup>
@@ -78,7 +78,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
     const [amount, setAmount] = useState(0);
     const [open, setOpen] = useState(false);
     const [currency, setCurrency] = useState<string>();
-    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation.id, currency, quotation.exchangeRate);
+    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation, currency, item.vat);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
 
     const selections = currencies.map((currency) => ({
@@ -177,6 +177,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
                                 type="number"
                                 step={0.01}
                                 value={value}
+                                onFocus={(event) => event.target.select()}
                                 onChange={(e) => setValue(parseFloat(e.target.value))}
                                 placeholder="value를 입력하세요."
                                 aria-describedby="price-error"
@@ -253,6 +254,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
                                 type="number"
                                 step={0.01}
                                 value={price}
+                                onFocus={(event) => event.target.select()}
                                 onChange={(e) => setPrice(parseFloat(e.target.value))}
                                 placeholder="price를 입력하세요."
                                 aria-describedby="price-error"
@@ -291,7 +293,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
                                 id="vat"
                                 name="vat"
                                 type="number"
-                                value={(amount / 10).toFixed(2)}
+                                value={item.vat ? (amount / 10).toFixed(2) : 0}
                                 step={0.01}
                                 readOnly
                                 aria-describedby="vat-error"
