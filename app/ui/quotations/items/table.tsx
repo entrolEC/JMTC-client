@@ -4,7 +4,10 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 
 export default function QuotationItemsTable({ quotationItems }: { quotationItems: QuoteItem[] }) {
     const total = quotationItems.reduce((acc, curr) => acc + curr.amount + curr.vat, 0);
-    const formattedTotal = new Intl.NumberFormat("ko", { style: "currency", currency: "KRW" }).format(total);
+
+    const formatNumber = (num: number) => new Intl.NumberFormat("ko", { style: "currency", currency: "KRW" }).format(num);
+
+    const formattedTotal = formatNumber(total);
 
     return (
         <Table>
@@ -32,8 +35,8 @@ export default function QuotationItemsTable({ quotationItems }: { quotationItems
                         <TableCell>{quotationItem.value}</TableCell>
                         <TableCell>{quotationItem.currency}</TableCell>
                         <TableCell>{quotationItem.price}</TableCell>
-                        <TableCell className="font-semibold text-right">{quotationItem.amount}</TableCell>
-                        <TableCell className="text-right">{quotationItem.vat}</TableCell>
+                        <TableCell className="font-semibold text-right">{formatNumber(quotationItem.amount)}</TableCell>
+                        <TableCell className="text-right">{formatNumber(quotationItem.vat)}</TableCell>
                         <TableCell>
                             <div className="flex justify-end gap-3">
                                 <UpdateQuotationItem quotationId={quotationItem.quote_id} id={quotationItem.id} />

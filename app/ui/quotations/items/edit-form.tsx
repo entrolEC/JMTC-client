@@ -26,8 +26,8 @@ export default function QuotationItemEditForm({
     const [price, setPrice] = useState(quotationItem.price);
     const [amount, setAmount] = useState(quotationItem.amount);
     const [open, setOpen] = useState(false);
-    const [currency, setCurrency] = useState<string | undefined>(quotation.currency);
-    const createQuotationItemWithQuotationId = updateQuotationItem.bind(null, quotation.id, quotationItem.id, currency, quotation.exchangeRate);
+    const [currency, setCurrency] = useState<string | undefined>(quotationItem.currency || quotation.currency);
+    const createQuotationItemWithQuotationId = updateQuotationItem.bind(null, quotation, quotationItem.id, currency, quotationItem.vat > 0);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
 
     const selections = currencies.map((currency) => ({
@@ -38,10 +38,6 @@ export default function QuotationItemEditForm({
     useEffect(() => {
         setAmount(value * price);
     }, [value, price]);
-
-    useEffect(() => {
-        setCurrency(quotation.currency);
-    }, [quotation]);
 
     return (
         <form action={dispatch}>
@@ -248,7 +244,7 @@ export default function QuotationItemEditForm({
                                 id="vat"
                                 name="vat"
                                 type="number"
-                                value={(amount / 10).toFixed(2)}
+                                value={quotationItem.vat ?? (amount / 10).toFixed(2)}
                                 step={0.01}
                                 readOnly
                                 aria-describedby="vat-error"

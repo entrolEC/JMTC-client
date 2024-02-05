@@ -92,13 +92,15 @@ export async function createQuotationItem(quotation: Quote, _currency: string | 
 }
 
 export async function updateQuotationItem(
-    quotationId: string,
+    quotation: Quote,
     id: string,
     _currency: string | undefined,
-    exchangeRate: number,
+    isVat: boolean,
     prevState: State,
     formData: FormData,
 ) {
+    const { id: quotationId, exchangeRate } = quotation;
+
     const validatedFields = UpdateQuotationItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
@@ -122,7 +124,10 @@ export async function updateQuotationItem(
         amount *= exchangeRate;
     }
     const vatRate = 0.1;
-    const vat = Math.floor(amount * vatRate * 100) / 100;
+    let vat = 0;
+    if (isVat) {
+        vat = Math.floor(amount * vatRate * 100) / 100;
+    }
 
     // Update the database record using Prisma
     try {
