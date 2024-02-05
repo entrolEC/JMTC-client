@@ -78,7 +78,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
     const [amount, setAmount] = useState(0);
     const [open, setOpen] = useState(false);
     const [currency, setCurrency] = useState<string>();
-    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation.id, currency);
+    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation.id, currency, quotation.exchangeRate);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
 
     const selections = currencies.map((currency) => ({

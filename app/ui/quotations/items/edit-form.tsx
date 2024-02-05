@@ -27,7 +27,7 @@ export default function QuotationItemEditForm({
     const [amount, setAmount] = useState(quotationItem.amount);
     const [open, setOpen] = useState(false);
     const [currency, setCurrency] = useState<string | undefined>(quotation.currency);
-    const createQuotationItemWithQuotationId = updateQuotationItem.bind(null, quotation.id, quotationItem.id, currency);
+    const createQuotationItemWithQuotationId = updateQuotationItem.bind(null, quotation.id, quotationItem.id, currency, quotation.exchangeRate);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
 
     const selections = currencies.map((currency) => ({

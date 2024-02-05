@@ -31,7 +31,13 @@ export type State = {
     message?: string | null;
 };
 
-export async function createQuotationItem(quotationId: string, _currency: string | undefined, prevState: State, formData: FormData) {
+export async function createQuotationItem(
+    quotationId: string,
+    _currency: string | undefined,
+    exchangeRate: number,
+    prevState: State,
+    formData: FormData,
+) {
     // Validate form fields using Zod
     const validatedFields = CreateQuotationItem.safeParse({
         code: formData.get("code"),
@@ -53,8 +59,12 @@ export async function createQuotationItem(quotationId: string, _currency: string
     // Prepare data for insertion into the database
     const { code, name, unitType, value, currency, price } = validatedFields.data;
 
-    const amount = value * price;
-    const vat = Math.floor(amount * 100) / 100;
+    let amount = value * price;
+    if (currency !== "KRW") {
+        amount *= exchangeRate;
+    }
+    const vatRate = 0.1;
+    const vat = Math.floor(amount * vatRate * 100) / 100;
 
     // Insert data into the database using Prisma
     try {
@@ -81,7 +91,14 @@ export async function createQuotationItem(quotationId: string, _currency: string
     redirect(`/dashboard/quotations/${quotationId}`);
 }
 
-export async function updateQuotationItem(quotationId: string, id: string, _currency: string | undefined, prevState: State, formData: FormData) {
+export async function updateQuotationItem(
+    quotationId: string,
+    id: string,
+    _currency: string | undefined,
+    exchangeRate: number,
+    prevState: State,
+    formData: FormData,
+) {
     const validatedFields = UpdateQuotationItem.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
@@ -100,8 +117,12 @@ export async function updateQuotationItem(quotationId: string, id: string, _curr
 
     const { code, name, unitType, value, currency, price } = validatedFields.data;
 
-    const amount = value * price;
-    const vat = Math.floor(amount * 100) / 100;
+    let amount = value * price;
+    if (currency !== "KRW") {
+        amount *= exchangeRate;
+    }
+    const vatRate = 0.1;
+    const vat = Math.floor(amount * vatRate * 100) / 100;
 
     // Update the database record using Prisma
     try {
@@ -134,7 +155,7 @@ export async function deleteQuotationItem(quotationId: string, id: string) {
         await prisma.quoteItem.delete({
             where: { id: id },
         });
-        redirect(`/dashboard/quotations/${quotationId}`);
+        revalidatePath(`/dashboard/quotations/${quotationId}`);
         return { message: "Deleted QuoteItem" };
     } catch (error) {
         return { message: "Database Error: Failed to Delete QuoteItem" };
