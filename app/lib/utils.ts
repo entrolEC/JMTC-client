@@ -61,3 +61,30 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
+
+function multiply(a: number, b: number) {
+    var factor = Math.pow(10, numberOfDecimalPlaces(a, b));
+    return (a * factor * (b * factor)) / (factor * factor);
+}
+
+function numberOfDecimalPlaces(...args: number[]) {
+    return Math.max(...args.map((arg) => (arg.toString().split(".")[1] || "").length));
+}
+
+const OCEAN_CBM_WEIGHT = 1000;
+const AIR_CBM_WEIGHT = 167;
+export function calculateValue(mode: string, value: number, grossWeight: number) {
+    if (mode === "AIR") {
+        if (multiply(value, AIR_CBM_WEIGHT) < grossWeight) {
+            return grossWeight;
+        } else {
+            return Math.floor(value * AIR_CBM_WEIGHT);
+        }
+    } else if (mode === "OCEAN") {
+        if (multiply(value, OCEAN_CBM_WEIGHT) < grossWeight) {
+            return grossWeight / OCEAN_CBM_WEIGHT;
+        } else {
+            return value;
+        }
+    }
+}

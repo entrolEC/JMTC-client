@@ -12,6 +12,7 @@ import { createQuotationItem } from "@/app/lib/quotations/items/actions";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { calculateValue } from "@/app/lib/utils";
 
 export default function QuotationItemCreateForm({ items, quotation, currencies }: { items: Item[]; quotation: Quote; currencies: Currency[] }) {
     const [open, setOpen] = useState(false);
@@ -73,7 +74,8 @@ export default function QuotationItemCreateForm({ items, quotation, currencies }
 
 function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
-    const [value, setValue] = useState(quotation.value || 0);
+    const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
+    const [value, setValue] = useState(calculatedValue ?? 0);
     const [price, setPrice] = useState(0);
     const [amount, setAmount] = useState(0);
     const [open, setOpen] = useState(false);

@@ -11,6 +11,7 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { calculateValue } from "@/app/lib/utils";
 
 export default function QuotationItemEditForm({
     quotationItem,
@@ -22,7 +23,8 @@ export default function QuotationItemEditForm({
     currencies: Currency[];
 }) {
     const initialState = { message: null, errors: {} };
-    const [value, setValue] = useState(quotation.value || 0);
+    const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
+    const [value, setValue] = useState(calculatedValue ?? 0);
     const [price, setPrice] = useState(quotationItem.price);
     const [amount, setAmount] = useState(quotationItem.amount);
     const [open, setOpen] = useState(false);

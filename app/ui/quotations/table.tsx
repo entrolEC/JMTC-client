@@ -8,6 +8,7 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
         <Table>
             <TableHeader>
                 <TableRow>
+                    <TableHead>모드</TableHead>
                     <TableHead>담당자</TableHead>
                     <TableHead>작성자</TableHead>
                     <TableHead>value</TableHead>
@@ -23,6 +24,7 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
             <TableBody>
                 {quotations?.map((quotation) => (
                     <TableRow key={quotation.id}>
+                        <TableCell className="font-bold">{quotation.mode}</TableCell>
                         <TableCell>{quotation.manager}</TableCell>
                         <TableCell>{quotation.writer}</TableCell>
                         <TableCell>{quotation.value}</TableCell>
