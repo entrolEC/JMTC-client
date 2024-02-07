@@ -6,7 +6,7 @@ export default async function Page() {
     const currencies = await fetchCurrencies();
     return (
         <div className="container mx-auto space-y-2">
-            <h1 className="font-bold text-4xl p-4 ml-8">Create Quotation</h1>
+            <h1 className="font-bold text-4xl p-4 ml-8">견적서 생성</h1>
             <QuotationCreateForm currencies={currencies} />
             <Link
                 href="/dashboard/quotations"
