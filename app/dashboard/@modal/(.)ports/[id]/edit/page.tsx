@@ -1,18 +1,18 @@
 import Modal from "@/app/ui/modal";
-import ItemEditForm from "@/app/ui/items/edit-form";
-import { fetchItemById } from "@/app/lib/items/data";
 import { notFound } from "next/navigation";
+import PortEditForm from "@/app/ui/ports/edit-form";
+import { fetchPortById } from "@/app/lib/ports/data";
 
 export default async function Page({ params }: { params: { id: string } }) {
     const { id } = params;
-    const item = await fetchItemById(id);
+    const port = await fetchPortById(id);
 
-    if (!item) {
+    if (!port) {
         notFound();
     }
     return (
         <Modal>
-            <ItemEditForm item={item} />
+            <PortEditForm port={port} />
         </Modal>
     );
 }

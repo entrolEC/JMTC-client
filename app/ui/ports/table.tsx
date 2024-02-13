@@ -1,6 +1,6 @@
-import { DeleteItem, UpdateItem } from "@/app/ui/items/buttons";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Port } from ".prisma/client";
+import { DeletePort, UpdatePort } from "@/app/ui/ports/buttons";
 
 export default function PortsTable({ ports }: { ports: Port[] }) {
     return (
@@ -23,8 +23,8 @@ export default function PortsTable({ ports }: { ports: Port[] }) {
                         <TableCell>{port.description}</TableCell>
                         <TableCell>
                             <div className="flex justify-end gap-3">
-                                <UpdateItem id={port.id} />
-                                <DeleteItem id={port.id} />
+                                <UpdatePort id={port.id} />
+                                <DeletePort id={port.id} />
                             </div>
                         </TableCell>
                     </TableRow>
