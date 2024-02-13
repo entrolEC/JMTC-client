@@ -95,19 +95,22 @@ model QuoteItem {
 }
 
 model Port {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
+  code        String
   name        String
-  description String
+  description String?
 }
 
 model Ctnr {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
+  code        String
   name        String
-  description String
+  description String?
 }
 
 model Incoterms {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
+  code        String
   name        String
-  description String
+  description String?
 }
