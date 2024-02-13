@@ -93,3 +93,21 @@ model QuoteItem {
   currency String
   vat      Float  @default(0)
 }
+
+model Port {
+  id          String @id @default(uuid())
+  name        String
+  description String
+}
+
+model Ctnr {
+  id          String @id @default(uuid())
+  name        String
+  description String
+}
+
+model Incoterms {
+  id          String @id @default(uuid())
+  name        String
+  description String
+}

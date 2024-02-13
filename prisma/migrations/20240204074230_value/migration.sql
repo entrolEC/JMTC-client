@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "QuoteItem" ADD COLUMN     "value" DOUBLE PRECISION NOT NULL DEFAULT 0;
