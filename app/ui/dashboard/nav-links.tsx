@@ -7,6 +7,7 @@ import {
     HomeIcon,
     MapPinIcon,
     RectangleStackIcon,
+    TruckIcon,
     UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -42,6 +43,11 @@ const links = [
         name: "Ctnrs",
         href: "/dashboard/ctnrs",
         icon: RectangleStackIcon,
+    },
+    {
+        name: "Incoterms",
+        href: "/dashboard/incoterms",
+        icon: TruckIcon,
     },
 ];
 

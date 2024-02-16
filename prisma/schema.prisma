@@ -108,7 +108,7 @@ model Ctnr {
   description String?
 }
 
-model Incoterms {
+model Incoterm {
   id          String  @id @default(uuid())
   code        String
   name        String

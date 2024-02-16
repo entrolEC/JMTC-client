@@ -1,8 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Ctnr } from ".prisma/client";
-import { DeleteCtnr, UpdateCtnr } from "@/app/ui/ctnrs/buttons";
+import { Incoterm } from ".prisma/client";
+import { DeleteIncoterm, UpdateIncoterm } from "@/app/ui/incoterms/buttons";
 
-export default function CtnrsTable({ ctnrs }: { ctnrs: Ctnr[] }) {
+export default function IncotermsTable({ incoterms }: { incoterms: Incoterm[] }) {
     return (
         <Table>
             <TableHeader>
@@ -16,15 +16,15 @@ export default function CtnrsTable({ ctnrs }: { ctnrs: Ctnr[] }) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {ctnrs?.map((ctnr) => (
-                    <TableRow key={ctnr.id}>
-                        <TableCell className="font-bold">{ctnr.code}</TableCell>
-                        <TableCell>{ctnr.name}</TableCell>
-                        <TableCell>{ctnr.description}</TableCell>
+                {incoterms?.map((incoterm) => (
+                    <TableRow key={incoterm.id}>
+                        <TableCell className="font-bold">{incoterm.code}</TableCell>
+                        <TableCell>{incoterm.name}</TableCell>
+                        <TableCell>{incoterm.description}</TableCell>
                         <TableCell>
                             <div className="flex justify-end gap-3">
-                                <UpdateCtnr id={ctnr.id} />
-                                <DeleteCtnr id={ctnr.id} />
+                                <UpdateIncoterm id={incoterm.id} />
+                                <DeleteIncoterm id={incoterm.id} />
                             </div>
                         </TableCell>
                     </TableRow>
