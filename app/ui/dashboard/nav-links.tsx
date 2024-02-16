@@ -2,6 +2,7 @@
 
 import {
     ClipboardDocumentListIcon,
+    CurrencyDollarIcon,
     DocumentDuplicateIcon,
     DocumentIcon,
     HomeIcon,
@@ -48,6 +49,11 @@ const links = [
         name: "Incoterms",
         href: "/dashboard/incoterms",
         icon: TruckIcon,
+    },
+    {
+        name: "Currencies",
+        href: "/dashboard/currencies",
+        icon: CurrencyDollarIcon,
     },
 ];
 
