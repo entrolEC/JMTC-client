@@ -1,6 +1,14 @@
 "use client";
 
-import { ClipboardDocumentListIcon, DocumentDuplicateIcon, DocumentIcon, HomeIcon, MapPinIcon, UserGroupIcon } from "@heroicons/react/24/outline";
+import {
+    ClipboardDocumentListIcon,
+    DocumentDuplicateIcon,
+    DocumentIcon,
+    HomeIcon,
+    MapPinIcon,
+    RectangleStackIcon,
+    UserGroupIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -29,6 +37,11 @@ const links = [
         name: "Ports",
         href: "/dashboard/ports",
         icon: MapPinIcon,
+    },
+    {
+        name: "Ctnrs",
+        href: "/dashboard/ctnrs",
+        icon: RectangleStackIcon,
     },
 ];
 

@@ -1,18 +1,18 @@
 import Breadcrumbs from "@/app/ui/invoices/breadcrumbs";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import PortEditForm from "@/app/ui/ports/edit-form";
-import { fetchPortById } from "@/app/lib/ports/data";
+import CtnrEditForm from "@/app/ui/ctnrs/edit-form";
+import { fetchCtnrById } from "@/app/lib/ctnrs/data";
 
 export const metadata: Metadata = {
-    title: "Edit Ports",
+    title: "Edit Ctnr",
 };
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-    const [port] = await Promise.all([fetchPortById(id)]);
+    const [ctnr] = await Promise.all([fetchCtnrById(id)]);
 
-    if (!port) {
+    if (!ctnr) {
         notFound();
     }
 
@@ -20,15 +20,15 @@ export default async function Page({ params }: { params: { id: string } }) {
         <main>
             <Breadcrumbs
                 breadcrumbs={[
-                    { label: "Ports", href: "/dashboard/ports" },
+                    { label: "Ctnrs", href: "/dashboard/ctnrs" },
                     {
-                        label: "Edit Port",
-                        href: `/dashboard/ports/${id}/edit`,
+                        label: "Edit Ctnr",
+                        href: `/dashboard/ctnrs/${id}/edit`,
                         active: true,
                     },
                 ]}
             />
-            <PortEditForm port={port} />
+            <CtnrEditForm ctnr={ctnr} />
         </main>
     );
 }
