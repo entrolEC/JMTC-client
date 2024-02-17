@@ -14,6 +14,10 @@ const FormSchema = z.object({
     grossWeight: z.nullable(z.coerce.number()),
     writer: z.string(),
     currency: z.string(),
+    loadingPort: z.string(),
+    dischargePort: z.string(),
+    ctnr: z.string(),
+    incoterm: z.string(),
     exchangeRate: z.coerce.number(),
 });
 
@@ -29,11 +33,23 @@ export type State = {
         currency?: string[];
         exchangeRate?: string[];
         grossWeight?: string[];
+        loadingPort?: string[];
+        dischargePort?: string[];
+        ctnr?: string[];
+        incoterm?: string[];
     };
     message?: string | null;
 };
 
-export async function createQuotation(_currency: string | undefined, prevState: State, formData: FormData) {
+export async function createQuotation(
+    _currency: string | undefined,
+    _loadingPort: string | undefined,
+    _dischargePort: string | undefined,
+    _ctnr: string | undefined,
+    _incoterm: string | undefined,
+    prevState: State,
+    formData: FormData,
+) {
     const session = await auth();
     // Validate form fields using Zod
     const validatedFields = CreateQuotation.safeParse({
@@ -42,6 +58,10 @@ export async function createQuotation(_currency: string | undefined, prevState: 
         value: formData.get("value"),
         grossWeight: formData.get("grossWeight"),
         currency: _currency,
+        loadingPort: _loadingPort,
+        dischargePort: _dischargePort,
+        ctnr: _ctnr,
+        incoterm: _incoterm,
         exchangeRate: formData.get("exchange_rate"),
     });
 
@@ -61,7 +81,7 @@ export async function createQuotation(_currency: string | undefined, prevState: 
     }
 
     // Prepare data for insertion into the database
-    const { mode, manager, value, grossWeight, currency, exchangeRate } = validatedFields.data;
+    const { mode, manager, value, grossWeight, currency, exchangeRate, dischargePort, loadingPort, incoterm, ctnr } = validatedFields.data;
 
     // Insert data into the database using Prisma
     try {
@@ -73,6 +93,10 @@ export async function createQuotation(_currency: string | undefined, prevState: 
                 manager: manager,
                 writer: session.user.name,
                 currency: currency,
+                ctnrId: ctnr,
+                incotermId: incoterm,
+                loadingPortId: loadingPort,
+                dischargePortId: dischargePort,
                 exchangeRate: exchangeRate,
             },
         });

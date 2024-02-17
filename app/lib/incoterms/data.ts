@@ -3,7 +3,7 @@ import { unstable_noStore as noStore } from "next/dist/server/web/spec-extension
 
 export async function fetchIncoterms() {
     try {
-        const fetchFilteredPorts = await prisma.incoterm.findMany();
+        const fetchFilteredIncoterms = await prisma.incoterm.findMany();
 
         return fetchFilteredIncoterms;
     } catch (error) {

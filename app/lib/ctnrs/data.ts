@@ -3,7 +3,7 @@ import { unstable_noStore as noStore } from "next/dist/server/web/spec-extension
 
 export async function fetchCtnrs() {
     try {
-        const fetchFilteredPorts = await prisma.ctnr.findMany();
+        const fetchFilteredCtnrs = await prisma.ctnr.findMany();
 
         return fetchFilteredCtnrs;
     } catch (error) {

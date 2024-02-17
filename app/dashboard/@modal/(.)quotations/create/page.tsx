@@ -1,13 +1,16 @@
 import Modal from "@/app/ui/modal";
 import QuotationCreateForm from "@/app/ui/quotations/create-form";
 import { fetchCurrencies } from "@/app/lib/data";
+import { fetchPorts } from "@/app/lib/ports/data";
+import { fetchCtnrs } from "@/app/lib/ctnrs/data";
+import { fetchIncoterms } from "@/app/lib/incoterms/data";
 
 export default async function Page() {
-    const currencies = await fetchCurrencies();
+    const [ports, ctnrs, incoterms, currencies] = await Promise.all([fetchPorts(), fetchCtnrs(), fetchIncoterms(), fetchCurrencies()]);
 
     return (
         <Modal>
-            <QuotationCreateForm currencies={currencies} />
+            <QuotationCreateForm ports={ports} ctnrs={ctnrs} incoterms={incoterms} currencies={currencies} />
         </Modal>
     );
 }
