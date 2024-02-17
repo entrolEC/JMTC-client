@@ -41,25 +41,21 @@ model Revenue {
 }
 
 model Quote {
-  id              String      @id @default(uuid())
-  mode            String      @default("ocean")
-  grossWeight     Float?
-  writer          String
-  manager         String
-  value           Float
-  currency        String
-  exchangeRate    Float
-  items           Item[]
-  loadingPortId   String
-  dischargePortId String
-  loadingPort     Port        @relation(name: "loadingPort", fields: [loadingPortId], references: [id])
-  dischargePort   Port        @relation(name: "dischargePort", fields: [dischargePortId], references: [id])
-  incoterm        Incoterm    @relation(fields: [incotermId], references: [id])
-  ctnr            Ctnr        @relation(fields: [ctnrId], references: [id])
-  QuoteItem       QuoteItem[]
-  createdAt       DateTime    @default(now())
-  incotermId      String
-  ctnrId          String
+  id            String      @id @default(uuid())
+  mode          String      @default("OCN IMPORT")
+  grossWeight   Float?
+  writer        String
+  manager       String
+  value         Float
+  currency      String
+  exchangeRate  Float
+  items         Item[]
+  dischargePort String
+  loadingPort   String
+  incoterm      String
+  ctnr          String
+  QuoteItem     QuoteItem[]
+  createdAt     DateTime    @default(now())
 }
 
 model Currency {
@@ -93,12 +89,10 @@ model QuoteItem {
 }
 
 model Port {
-  id             String  @id @default(uuid())
-  code           String
-  name           String
-  description    String?
-  loadingQuote   Quote[] @relation(name: "loadingPort")
-  dischargeQuote Quote[] @relation(name: "dischargePort")
+  id          String  @id @default(uuid())
+  code        String
+  name        String
+  description String?
 }
 
 model Ctnr {
@@ -106,7 +100,6 @@ model Ctnr {
   code        String
   name        String
   description String?
-  Quote       Quote[]
 }
 
 model Incoterm {
@@ -114,5 +107,4 @@ model Incoterm {
   code        String
   name        String
   description String?
-  Quote       Quote[]
 }

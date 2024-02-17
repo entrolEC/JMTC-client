@@ -15,7 +15,11 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                     <TableHead>G.Weight</TableHead>
                     <TableHead>통화</TableHead>
                     <TableHead>환율</TableHead>
-                    <TableHead>작성일</TableHead>
+                    <TableHead>Port of Loading</TableHead>
+                    <TableHead>Port of Discharge</TableHead>
+                    <TableHead>CTNR</TableHead>
+                    <TableHead>INCOTERMS</TableHead>
+                    <TableHead className="text-right">작성일</TableHead>
                     <TableHead>
                         <span className="sr-only">Edit</span>
                     </TableHead>
@@ -31,7 +35,11 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                         <TableCell>{quotation.grossWeight ?? "-"}</TableCell>
                         <TableCell>{quotation.currency}</TableCell>
                         <TableCell>{quotation.exchangeRate}</TableCell>
-                        <TableCell>{formatDateToLocal(quotation.createdAt)}</TableCell>
+                        <TableCell>{quotation.loadingPort}</TableCell>
+                        <TableCell>{quotation.dischargePort}</TableCell>
+                        <TableCell>{quotation.ctnr}</TableCell>
+                        <TableCell>{quotation.incoterm}</TableCell>
+                        <TableCell className="text-right">{formatDateToLocal(quotation.createdAt)}</TableCell>
                         <TableCell>
                             <div className="flex justify-end gap-3">
                                 <QuotationDetail id={quotation.id} />

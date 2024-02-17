@@ -8,7 +8,7 @@ import { auth, signOut } from "@/auth";
 
 const FormSchema = z.object({
     id: z.string(),
-    mode: z.enum(["OCEAN", "AIR"]),
+    mode: z.string(),
     value: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
     manager: z.string().min(1, "담당자를 입력해주세요"),
     grossWeight: z.nullable(z.coerce.number()),
@@ -93,10 +93,10 @@ export async function createQuotation(
                 manager: manager,
                 writer: session.user.name,
                 currency: currency,
-                ctnrId: ctnr,
-                incotermId: incoterm,
-                loadingPortId: loadingPort,
-                dischargePortId: dischargePort,
+                ctnr: ctnr,
+                incoterm: incoterm,
+                loadingPort: loadingPort,
+                dischargePort: dischargePort,
                 exchangeRate: exchangeRate,
             },
         });
@@ -157,10 +157,10 @@ export async function updateQuotation(
                 value: value,
                 manager: manager,
                 currency: currency,
-                ctnrId: ctnr,
-                incotermId: incoterm,
-                loadingPortId: loadingPort,
-                dischargePortId: dischargePort,
+                ctnr: ctnr,
+                incoterm: incoterm,
+                loadingPort: loadingPort,
+                dischargePort: dischargePort,
                 exchangeRate: exchangeRate,
             },
         });

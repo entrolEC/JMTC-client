@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Quote" ALTER COLUMN "mode" SET DEFAULT 'OCN IMPORT';
