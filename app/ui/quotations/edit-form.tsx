@@ -10,22 +10,285 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Ctnr, Incoterm, Port } from ".prisma/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function QuotationEditForm({ quotation, currencies }: { quotation: Quote; currencies: Currency[] }) {
+export default function QuotationEditForm({
+    quotation,
+    currencies,
+    ports,
+    ctnrs,
+    incoterms,
+}: {
+    quotation: Quote;
+    currencies: Currency[];
+    ports: Port[];
+    ctnrs: Ctnr[];
+    incoterms: Incoterm[];
+}) {
     const initialState = { message: null, errors: {} };
+    const [loadingPortOpen, setLoadingPortOpen] = useState(false);
+    const [dischargePortOpen, setDischargePortOpen] = useState(false);
+    const [ctnrOpen, setCtnrOpen] = useState(false);
+    const [incotermOpen, setIncotermOpen] = useState(false);
+    const [loadingPort, setLoadingPort] = useState<string | undefined>(quotation.loadingPortId);
+    const [dischargePort, setDischargePort] = useState<string | undefined>(quotation.dischargePortId);
+    const [ctnr, setCtnr] = useState<string | undefined>(quotation.ctnrId);
+    const [incoterm, setIncoterm] = useState<string | undefined>(quotation.incotermId);
     const [currency, setCurrency] = useState<string | undefined>(quotation.currency);
-    const updateQuotationWithId = updateQuotation.bind(null, quotation.id, currency);
+    const updateQuotationWithId = updateQuotation.bind(null, quotation.id, currency, loadingPort, dischargePort, ctnr, incoterm);
     const [state, dispatch] = useFormState(updateQuotationWithId, initialState);
     const [open, setOpen] = useState(false);
 
-    const selections = currencies.map((currency) => ({
+    const currencySelections = currencies.map((currency) => ({
         label: `${currency.code}`,
         value: currency,
+    }));
+
+    const portSelections = ports.map((port) => ({
+        label: `${port.code} - ${port.name}`,
+        value: port,
+    }));
+
+    const ctnrSelections = ctnrs.map((ctnr) => ({
+        label: `${ctnr.code} - ${ctnr.name}`,
+        value: ctnr,
+    }));
+
+    const incotermSelecions = incoterms.map((incoterm) => ({
+        label: `${incoterm.code} - ${incoterm.name}`,
+        value: incoterm,
     }));
 
     return (
         <form action={dispatch}>
             <div className="rounded-md p-4 md:p-6">
+                <div className="mb-4">
+                    <Select name="mode" aria-describedby="mode-error">
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="mode 선택.." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="OCEAN">OCEAN</SelectItem>
+                            <SelectItem value="AIR">AIR</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <div id="mode-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.mode &&
+                            state.errors.mode.map((error: string) => (
+                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                    {error}
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div className="flex space-x-4">
+                    <div className="mb-4">
+                        <label htmlFor="loading_port" className="mb-2 block text-sm font-medium">
+                            Port of Loading
+                        </label>
+                        <div className="relative">
+                            <Popover open={loadingPortOpen} onOpenChange={setLoadingPortOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button name="loading_port" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                                        {loadingPort
+                                            ? portSelections.find((selection) => selection.value.id === loadingPort)?.label
+                                            : "아이템 선택...."}
+                                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="port 선택..." />
+                                        <CommandEmpty>No item found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {portSelections.map((port) => (
+                                                <CommandItem
+                                                    key={port.value.id}
+                                                    value={port.value.id}
+                                                    onSelect={(currentValue) => {
+                                                        setLoadingPort(currentValue === loadingPort ? undefined : currentValue);
+                                                        setLoadingPortOpen(false);
+                                                    }}
+                                                >
+                                                    <CheckIcon
+                                                        className={cn("ml-auto h-4 w-4", loadingPort === port.value.id ? "opacity-100" : "opacity-0")}
+                                                    />
+                                                    {port.label}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                        <div id="currency-error" aria-live="polite" aria-atomic="true">
+                            {state.errors?.loadingPort &&
+                                state.errors.loadingPort.map((error: string) => (
+                                    <p className="mt-2 text-sm text-red-500" key={error}>
+                                        {error}
+                                    </p>
+                                ))}
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="discharge_port" className="mb-2 block text-sm font-medium">
+                            Port of Discharge
+                        </label>
+                        <div className="relative">
+                            <Popover open={dischargePortOpen} onOpenChange={setDischargePortOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button name="loading_port" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                                        {dischargePort
+                                            ? portSelections.find((selection) => selection.value.id === dischargePort)?.label
+                                            : "아이템 선택...."}
+                                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="port 선택..." />
+                                        <CommandEmpty>No item found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {portSelections.map((port) => (
+                                                <CommandItem
+                                                    key={port.value.id}
+                                                    value={port.value.id}
+                                                    onSelect={(currentValue) => {
+                                                        setDischargePort(currentValue === dischargePort ? undefined : currentValue);
+                                                        setDischargePortOpen(false);
+                                                    }}
+                                                >
+                                                    <CheckIcon
+                                                        className={cn(
+                                                            "ml-auto h-4 w-4",
+                                                            dischargePort === port.value.id ? "opacity-100" : "opacity-0",
+                                                        )}
+                                                    />
+                                                    {port.label}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                        <div id="currency-error" aria-live="polite" aria-atomic="true">
+                            {state.errors?.dischargePort &&
+                                state.errors.dischargePort.map((error: string) => (
+                                    <p className="mt-2 text-sm text-red-500" key={error}>
+                                        {error}
+                                    </p>
+                                ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex space-x-4">
+                    <div className="mb-4">
+                        <label htmlFor="ctnr" className="mb-2 block text-sm font-medium">
+                            ctnr
+                        </label>
+                        <div className="relative">
+                            <Popover open={ctnrOpen} onOpenChange={setCtnrOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button name="ctnr" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                                        {dischargePort ? ctnrSelections.find((selection) => selection.value.id === ctnr)?.label : "아이템 선택...."}
+                                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="ctnr 선택..." />
+                                        <CommandEmpty>No item found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {ctnrSelections.map((ctnrSelection) => (
+                                                <CommandItem
+                                                    key={ctnrSelection.value.id}
+                                                    value={ctnrSelection.value.id}
+                                                    onSelect={(currentValue) => {
+                                                        setCtnr(currentValue === ctnr ? undefined : currentValue);
+                                                        setCtnrOpen(false);
+                                                    }}
+                                                >
+                                                    <CheckIcon
+                                                        className={cn(
+                                                            "ml-auto h-4 w-4",
+                                                            ctnr === ctnrSelection.value.id ? "opacity-100" : "opacity-0",
+                                                        )}
+                                                    />
+                                                    {ctnrSelection.label}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                        <div id="currency-error" aria-live="polite" aria-atomic="true">
+                            {state.errors?.ctnr &&
+                                state.errors.ctnr.map((error: string) => (
+                                    <p className="mt-2 text-sm text-red-500" key={error}>
+                                        {error}
+                                    </p>
+                                ))}
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="ctnr" className="mb-2 block text-sm font-medium">
+                            incoterms
+                        </label>
+                        <div className="relative">
+                            <Popover open={incotermOpen} onOpenChange={setIncotermOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button name="ctnr" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+                                        {dischargePort
+                                            ? incotermSelecions.find((selection) => selection.value.id === incoterm)?.label
+                                            : "아이템 선택...."}
+                                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[200px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="incoterms 선택..." />
+                                        <CommandEmpty>No item found.</CommandEmpty>
+                                        <CommandGroup>
+                                            {incotermSelecions.map((incotermSelection) => (
+                                                <CommandItem
+                                                    key={incotermSelection.value.id}
+                                                    value={incotermSelection.value.id}
+                                                    onSelect={(currentValue) => {
+                                                        setIncoterm(currentValue === incoterm ? undefined : currentValue);
+                                                        setIncotermOpen(false);
+                                                    }}
+                                                >
+                                                    <CheckIcon
+                                                        className={cn(
+                                                            "ml-auto h-4 w-4",
+                                                            incoterm === incotermSelection.value.id ? "opacity-100" : "opacity-0",
+                                                        )}
+                                                    />
+                                                    {incotermSelection.label}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                        <div id="currency-error" aria-live="polite" aria-atomic="true">
+                            {state.errors?.incoterm &&
+                                state.errors.incoterm.map((error: string) => (
+                                    <p className="mt-2 text-sm text-red-500" key={error}>
+                                        {error}
+                                    </p>
+                                ))}
+                        </div>
+                    </div>
+                </div>
                 <div className="mb-4">
                     <label htmlFor="currency" className="mb-2 block text-sm font-medium">
                         통화 선택
@@ -34,7 +297,7 @@ export default function QuotationEditForm({ quotation, currencies }: { quotation
                         <Popover open={open} onOpenChange={setOpen}>
                             <PopoverTrigger asChild>
                                 <Button name="currency" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
-                                    {currency ? selections.find((selection) => selection.value.code === currency)?.label : "아이템 선택...."}
+                                    {currency ? currencySelections.find((selection) => selection.value.code === currency)?.label : "아이템 선택...."}
                                     <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                             </PopoverTrigger>
@@ -43,7 +306,7 @@ export default function QuotationEditForm({ quotation, currencies }: { quotation
                                     <CommandInput placeholder="아이템 선택..." />
                                     <CommandEmpty>No item found.</CommandEmpty>
                                     <CommandGroup>
-                                        {selections.map((selection) => (
+                                        {currencySelections.map((selection) => (
                                             <CommandItem
                                                 key={selection.value.id}
                                                 value={selection.value.code}

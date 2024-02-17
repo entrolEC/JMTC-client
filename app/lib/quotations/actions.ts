@@ -117,12 +117,25 @@ export async function createQuotation(
     redirect("/dashboard/quotations");
 }
 
-export async function updateQuotation(id: string, _currency: string | undefined, prevState: State, formData: FormData) {
+export async function updateQuotation(
+    id: string,
+    _currency: string | undefined,
+    _loadingPort: string | undefined,
+    _dischargePort: string | undefined,
+    _ctnr: string | undefined,
+    _incoterm: string | undefined,
+    prevState: State,
+    formData: FormData,
+) {
     const validatedFields = UpdateQuotation.safeParse({
         grossWeight: formData.get("grossWeight"),
         manager: formData.get("manager"),
         value: formData.get("value"),
         currency: _currency,
+        loadingPort: _loadingPort,
+        dischargePort: _dischargePort,
+        ctnr: _ctnr,
+        incoterm: _incoterm,
         exchangeRate: formData.get("exchange_rate"),
     });
 
@@ -133,7 +146,7 @@ export async function updateQuotation(id: string, _currency: string | undefined,
         };
     }
 
-    const { value, manager, grossWeight, currency, exchangeRate } = validatedFields.data;
+    const { value, manager, grossWeight, currency, loadingPort, dischargePort, ctnr, incoterm, exchangeRate } = validatedFields.data;
 
     // Update the database record using Prisma
     try {
@@ -144,6 +157,10 @@ export async function updateQuotation(id: string, _currency: string | undefined,
                 value: value,
                 manager: manager,
                 currency: currency,
+                ctnrId: ctnr,
+                incotermId: incoterm,
+                loadingPortId: loadingPort,
+                dischargePortId: dischargePort,
                 exchangeRate: exchangeRate,
             },
         });
