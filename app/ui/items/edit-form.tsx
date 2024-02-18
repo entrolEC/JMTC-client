@@ -79,7 +79,7 @@ export default function ItemEditForm({ item }: { item: Item }) {
 
             <div className="mb-4">
                 <div className="flex items-center space-x-2">
-                    <Checkbox id="vat" name="vat" defaultValue={String(item.vat)} />
+                    <Checkbox id="vat" name="vat" defaultChecked={item.vat} />
                     <label htmlFor="vat" className="mb-2 block text-sm font-medium">
                         VAT
                     </label>
