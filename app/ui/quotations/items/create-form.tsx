@@ -95,7 +95,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
         } else {
             setAmount(temp * quotation.exchangeRate);
         }
-    }, [value, price, currency]);
+    }, [value, price, currency, quotation.exchangeRate]);
 
     useEffect(() => {
         setCurrency(quotation.currency);

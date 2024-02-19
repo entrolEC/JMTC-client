@@ -74,13 +74,14 @@ function numberOfDecimalPlaces(...args: number[]) {
 const OCEAN_CBM_WEIGHT = 1000;
 const AIR_CBM_WEIGHT = 167;
 export function calculateValue(mode: string, value: number, grossWeight: number) {
-    if (mode === "AIR") {
+    const str = mode.toUpperCase();
+    if (str.includes("AIR")) {
         if (multiply(value, AIR_CBM_WEIGHT) < grossWeight) {
             return grossWeight;
         } else {
             return Math.floor(value * AIR_CBM_WEIGHT);
         }
-    } else if (mode === "OCEAN") {
+    } else if (str.includes("OCN") || str.includes("OCEAN")) {
         if (multiply(value, OCEAN_CBM_WEIGHT) < grossWeight) {
             return grossWeight / OCEAN_CBM_WEIGHT;
         } else {
