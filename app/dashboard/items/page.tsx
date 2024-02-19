@@ -30,7 +30,7 @@ export default async function Page({
                 <h1 className={`${lusitana.className} text-2xl`}>Items</h1>
             </div>
             <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-                <Search placeholder="Search invoices..." />
+                <Search placeholder="아이템 검색..." />
                 <CreateItem />
             </div>
             <Suspense key={query} fallback={<InvoicesTableSkeleton />}>
