@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DeleteIncoterm, UpdateIncoterm } from "@/app/ui/incoterms/buttons";
 import { Currency } from "@prisma/client";
+import { DeleteCurrency, UpdateCurrency } from "@/app/ui/currencies/buttons";
 
 export default function CurrenciesTable({ currencies }: { currencies: Currency[] }) {
     return (
@@ -21,8 +21,8 @@ export default function CurrenciesTable({ currencies }: { currencies: Currency[]
                         <TableCell>{currency.name}</TableCell>
                         <TableCell>
                             <div className="flex justify-end gap-3">
-                                <UpdateIncoterm id={currency.id} />
-                                <DeleteIncoterm id={currency.id} />
+                                <UpdateCurrency id={currency.id} />
+                                <DeleteCurrency id={currency.id} />
                             </div>
                         </TableCell>
                     </TableRow>
