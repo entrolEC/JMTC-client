@@ -360,7 +360,7 @@ export default function QuotationEditForm({
                             name="exchange_rate"
                             type="number"
                             defaultValue={quotation.exchangeRate}
-                            step={0.0001}
+                            step={0.01}
                             placeholder="환율을 입력하세요"
                             aria-describedby="exchange_rate-error"
                         />

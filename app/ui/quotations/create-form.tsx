@@ -348,7 +348,7 @@ export default function QuotationCreateForm({
                             id="exchange_reate"
                             name="exchange_rate"
                             type="number"
-                            step={0.001}
+                            step={0.01}
                             placeholder="환율을 입력하세요"
                             aria-describedby="manager-error"
                         />

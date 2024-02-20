@@ -63,7 +63,7 @@ export async function createQuotationItem(quotation: Quote, _currency: string | 
     const vatRate = 0.1;
     let vat = 0;
     if (isVat) {
-        vat = Math.floor(amount * vatRate * 100) / 100;
+        vat = Math.round(amount * vatRate * 100) / 100;
     }
 
     // Insert data into the database using Prisma
@@ -126,7 +126,7 @@ export async function updateQuotationItem(
     const vatRate = 0.1;
     let vat = 0;
     if (isVat) {
-        vat = Math.floor(amount * vatRate * 100) / 100;
+        vat = Math.round(amount * vatRate * 100) / 100;
     }
 
     // Update the database record using Prisma
