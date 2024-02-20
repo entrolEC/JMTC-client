@@ -62,30 +62,11 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-function multiply(a: number, b: number) {
+export function multiply(a: number, b: number) {
     var factor = Math.pow(10, numberOfDecimalPlaces(a, b));
     return (a * factor * (b * factor)) / (factor * factor);
 }
 
 function numberOfDecimalPlaces(...args: number[]) {
     return Math.max(...args.map((arg) => (arg.toString().split(".")[1] || "").length));
-}
-
-const OCEAN_CBM_WEIGHT = 1000;
-const AIR_CBM_WEIGHT = 167;
-export function calculateValue(mode: string, value: number, grossWeight: number) {
-    const str = mode.toUpperCase();
-    if (str.includes("AIR")) {
-        if (multiply(value, AIR_CBM_WEIGHT) < grossWeight) {
-            return grossWeight;
-        } else {
-            return Math.round(value * AIR_CBM_WEIGHT * 100) / 100;
-        }
-    } else if (str.includes("OCN") || str.includes("OCEAN")) {
-        if (multiply(value, OCEAN_CBM_WEIGHT) < grossWeight) {
-            return grossWeight / OCEAN_CBM_WEIGHT;
-        } else {
-            return value;
-        }
-    }
 }

@@ -12,8 +12,8 @@ import { createQuotationItem } from "@/app/lib/quotations/items/actions";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { calculateValue } from "@/app/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { calculateValue, getDefaultUnitType, getValueForUnitType } from "@/app/lib/bussinessUtil";
 
 export default function QuotationItemCreateForm({ items, quotation, currencies }: { items: Item[]; quotation: Quote; currencies: Currency[] }) {
     const [open, setOpen] = useState(false);
@@ -76,12 +76,13 @@ export default function QuotationItemCreateForm({ items, quotation, currencies }
 function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
     const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
+    const defaultUnitType = getDefaultUnitType(item.code, quotation.mode);
     const [value, setValue] = useState(calculatedValue ?? 0);
     const [price, setPrice] = useState(0);
     const [amount, setAmount] = useState(0);
     const [open, setOpen] = useState(false);
     const [vatEnable, setVatEnable] = useState(item.vat);
-    const [unitType, setUnitType] = useState(item.unitType);
+    const [unitType, setUnitType] = useState(defaultUnitType ?? item.unitType);
     const [currency, setCurrency] = useState<string>();
     const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation, currency, vatEnable);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
@@ -104,13 +105,10 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
         setCurrency(quotation.currency);
     }, [quotation]);
 
-    const onUnitTypeChange = (value: string) => {
-        setUnitType(value);
-        if (value === "BL") {
-            setValue(1);
-        } else {
-            setValue(calculatedValue ?? 0);
-        }
+    const onUnitTypeChange = (unitType: string) => {
+        const newValue = getValueForUnitType(unitType, calculatedValue);
+        setUnitType(unitType);
+        setValue(newValue);
     };
 
     return (
