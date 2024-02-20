@@ -76,13 +76,13 @@ export default function QuotationItemCreateForm({ items, quotation, currencies }
 function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
     const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
-    const defaultUnitType = getDefaultUnitType(item.code, quotation.mode);
-    const [value, setValue] = useState(calculatedValue ?? 0);
+    const defaultUnitType = getDefaultUnitType(item.code, quotation.mode); // 모드와 코드에 따른 기본 유닛타입
+    const [unitType, setUnitType] = useState(item.unitType);
+    const [value, setValue] = useState(getValueForUnitType(item.unitType, calculatedValue));
     const [price, setPrice] = useState(0);
     const [amount, setAmount] = useState(0);
     const [open, setOpen] = useState(false);
     const [vatEnable, setVatEnable] = useState(item.vat);
-    const [unitType, setUnitType] = useState(defaultUnitType ?? item.unitType);
     const [currency, setCurrency] = useState<string>();
     const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation, currency, vatEnable);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
@@ -309,7 +309,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
                                 id="vat"
                                 name="vat"
                                 type="number"
-                                value={vatEnable ? (amount / 10).toFixed(2) : 0}
+                                value={vatEnable ? Math.round((amount / 10) * 100) / 100 : 0}
                                 step={0.01}
                                 readOnly
                                 aria-describedby="vat-error"
