@@ -81,6 +81,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
     const [amount, setAmount] = useState(0);
     const [open, setOpen] = useState(false);
     const [vatEnable, setVatEnable] = useState(item.vat);
+    const [unitType, setUnitType] = useState(item.unitType);
     const [currency, setCurrency] = useState<string>();
     const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation, currency, vatEnable);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
@@ -102,6 +103,15 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
     useEffect(() => {
         setCurrency(quotation.currency);
     }, [quotation]);
+
+    const onUnitTypeChange = (value: string) => {
+        setUnitType(value);
+        if (value === "BL") {
+            setValue(1);
+        } else {
+            setValue(calculatedValue ?? 0);
+        }
+    };
 
     return (
         <form action={dispatch}>
@@ -145,7 +155,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
                 </div>
 
                 <div className="mb-4">
-                    <Select name="unit_type" aria-describedby="unitType-error" defaultValue={item.unitType}>
+                    <Select name="unit_type" aria-describedby="unitType-error" value={unitType} onValueChange={onUnitTypeChange}>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="UnitType 선택.." />
                         </SelectTrigger>
