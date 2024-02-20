@@ -13,6 +13,7 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { calculateValue } from "@/app/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function QuotationItemCreateForm({ items, quotation, currencies }: { items: Item[]; quotation: Quote; currencies: Currency[] }) {
     const [open, setOpen] = useState(false);
@@ -79,8 +80,9 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
     const [price, setPrice] = useState(0);
     const [amount, setAmount] = useState(0);
     const [open, setOpen] = useState(false);
+    const [vatEnable, setVatEnable] = useState(item.vat);
     const [currency, setCurrency] = useState<string>();
-    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation, currency, item.vat);
+    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation, currency, vatEnable);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
 
     const selections = currencies.map((currency) => ({
@@ -286,16 +288,20 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="vat" className="mb-2 block text-sm font-medium">
-                        VAT
-                    </label>
+                    <div className="flex items-center space-x-2 mb-2">
+                        <label htmlFor="vat" className="block text-sm font-medium">
+                            VAT
+                        </label>
+                        <Checkbox id="vatEnable" name="vatEnable" checked={vatEnable} onClick={() => setVatEnable((prev) => !prev)} />
+                    </div>
+
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
                             <Input
                                 id="vat"
                                 name="vat"
                                 type="number"
-                                value={item.vat ? (amount / 10).toFixed(2) : 0}
+                                value={vatEnable ? (amount / 10).toFixed(2) : 0}
                                 step={0.01}
                                 readOnly
                                 aria-describedby="vat-error"
