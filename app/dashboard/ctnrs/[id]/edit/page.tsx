@@ -1,8 +1,8 @@
-import Breadcrumbs from "@/app/ui/invoices/breadcrumbs";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import CtnrEditForm from "@/app/ui/ctnrs/edit-form";
 import { fetchCtnrById } from "@/app/lib/ctnrs/data";
+import Breadcrumbs from "@/app/ui/breadcrumbs";
 
 export const metadata: Metadata = {
     title: "Edit Ctnr",

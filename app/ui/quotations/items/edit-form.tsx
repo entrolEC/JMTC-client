@@ -11,7 +11,7 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { calculateValue } from "@/app/lib/utils";
+import { calculateValue } from "@/app/lib/bussinessUtil";
 
 export default function QuotationItemEditForm({
     quotationItem,

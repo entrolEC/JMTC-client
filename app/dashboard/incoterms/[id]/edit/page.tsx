@@ -1,8 +1,8 @@
-import Breadcrumbs from "@/app/ui/invoices/breadcrumbs";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import IncotermEditForm from "@/app/ui/incoterms/edit-form";
 import { fetchIncotermById } from "@/app/lib/incoterms/data";
+import Breadcrumbs from "@/app/ui/breadcrumbs";
 
 export const metadata: Metadata = {
     title: "Edit Incoterm",
