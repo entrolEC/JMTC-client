@@ -11,7 +11,8 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { calculateValue } from "@/app/lib/bussinessUtil";
+import { calculateValue, getValueForUnitType } from "@/app/lib/bussinessUtil";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function QuotationItemEditForm({
     quotationItem,
@@ -24,10 +25,12 @@ export default function QuotationItemEditForm({
 }) {
     const initialState = { message: null, errors: {} };
     const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
-    const [value, setValue] = useState(calculatedValue ?? 0);
+    const [unitType, setUnitType] = useState(quotationItem.unitType);
+    const [value, setValue] = useState(getValueForUnitType(unitType, calculatedValue ?? 0));
     const [price, setPrice] = useState(quotationItem.price);
     const [amount, setAmount] = useState(quotationItem.amount);
     const [open, setOpen] = useState(false);
+    const [vatEnable, setVatEnable] = useState(quotationItem.vat > 0);
     const [currency, setCurrency] = useState<string | undefined>(quotationItem.currency || quotation.currency);
     const createQuotationItemWithQuotationId = updateQuotationItem.bind(null, quotation, quotationItem.id, currency, quotationItem.vat > 0);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
@@ -38,8 +41,23 @@ export default function QuotationItemEditForm({
     }));
 
     useEffect(() => {
-        setAmount(value * price);
-    }, [value, price]);
+        const temp = value * price;
+        if (currency === "KRW") {
+            setAmount(temp);
+        } else {
+            setAmount(temp * quotation.exchangeRate);
+        }
+    }, [value, price, currency, quotation.exchangeRate]);
+
+    useEffect(() => {
+        setCurrency(quotation.currency);
+    }, [quotation]);
+
+    const onUnitTypeChange = (unitType: string) => {
+        const newValue = getValueForUnitType(unitType, calculatedValue);
+        setUnitType(unitType);
+        setValue(newValue);
+    };
 
     return (
         <form action={dispatch}>
@@ -96,7 +114,7 @@ export default function QuotationItemEditForm({
                 </div>
 
                 <div className="mb-4">
-                    <Select name="unit_type" aria-describedby="unitType-error" defaultValue={quotationItem.unitType}>
+                    <Select name="unit_type" aria-describedby="unitType-error" value={unitType} onValueChange={onUnitTypeChange}>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="UnitType 선택.." />
                         </SelectTrigger>
@@ -237,16 +255,19 @@ export default function QuotationItemEditForm({
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="vat" className="mb-2 block text-sm font-medium">
-                        VAT
-                    </label>
+                    <div className="flex items-center space-x-2 mb-2">
+                        <label htmlFor="vat" className="block text-sm font-medium">
+                            VAT
+                        </label>
+                        <Checkbox id="vatEnable" name="vatEnable" checked={vatEnable} onClick={() => setVatEnable((prev) => !prev)} />
+                    </div>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
                             <Input
                                 id="vat"
                                 name="vat"
                                 type="number"
-                                value={quotationItem.vat ?? (amount / 10).toFixed(2)}
+                                value={quotationItem.vat ?? Math.round((amount / 10) * 100) / 100}
                                 step={0.01}
                                 readOnly
                                 aria-describedby="vat-error"
