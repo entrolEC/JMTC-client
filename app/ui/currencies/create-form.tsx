@@ -2,8 +2,8 @@
 
 import { useFormState } from "react-dom";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/app/ui/button";
 import { createCurrency } from "@/app/lib/currencies/actions";
+import { Button } from "@/components/ui/button";
 
 export default function CurrencyCreateForm() {
     const initialState = { message: null, errors: {} };

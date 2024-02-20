@@ -2,7 +2,7 @@
 
 import { useFormState } from "react-dom";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/app/ui/button";
+import { Button } from "@/components/ui/button";
 import { createCtnr } from "@/app/lib/ctnrs/actions";
 
 export default function CtnrCreateForm() {

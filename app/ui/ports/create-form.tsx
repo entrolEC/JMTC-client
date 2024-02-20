@@ -3,7 +3,7 @@
 import { useFormState } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { createPort } from "@/app/lib/ports/actions";
-import { Button } from "@/app/ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function PortCreateForm() {
     const initialState = { message: null, errors: {} };

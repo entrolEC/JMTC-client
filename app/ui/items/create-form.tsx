@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/app/ui/button";
+import { Button } from "@/components/ui/button";
 import { useFormState } from "react-dom";
 import { createItem } from "@/app/lib/items/actions";
 import { Input } from "@/components/ui/input";
