@@ -1,14 +1,6 @@
 "use client";
 
-import {
-    ClipboardDocumentListIcon,
-    CurrencyDollarIcon,
-    DocumentIcon,
-    HomeIcon,
-    MapPinIcon,
-    RectangleStackIcon,
-    TruckIcon,
-} from "@heroicons/react/24/outline";
+import { ClipboardDocumentListIcon, CurrencyDollarIcon, DocumentIcon, MapPinIcon, RectangleStackIcon, TruckIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx"; // Map of links to display in the side navigation.
@@ -16,16 +8,15 @@ import clsx from "clsx"; // Map of links to display in the side navigation.
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-    { name: "Home", href: "/dashboard", icon: HomeIcon },
-    {
-        name: "Items",
-        href: "/dashboard/items",
-        icon: DocumentIcon,
-    },
     {
         name: "Quotations",
         href: "/dashboard/quotations",
         icon: ClipboardDocumentListIcon,
+    },
+    {
+        name: "Items",
+        href: "/dashboard/items",
+        icon: DocumentIcon,
     },
     {
         name: "Ports",

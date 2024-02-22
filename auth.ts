@@ -2,15 +2,15 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import type { User } from "@/app/lib/definitions";
 import { authConfig } from "./auth.config";
 import prisma from "@/app/lib/prismaClient";
+import { User } from "@prisma/client";
 
-async function getUser(email: string): Promise<User | null> {
+async function getUser(name: string): Promise<User | null> {
     try {
         const user = await prisma.user.findUnique({
             where: {
-                email: email,
+                name: name,
             },
         });
         return user;
@@ -25,12 +25,12 @@ export const { auth, signIn, signOut } = NextAuth({
     providers: [
         Credentials({
             async authorize(credentials) {
-                const parsedCredentials = z.object({ email: z.string().email(), password: z.string().min(6) }).safeParse(credentials);
+                const parsedCredentials = z.object({ name: z.string(), password: z.string().min(6) }).safeParse(credentials);
 
                 if (parsedCredentials.success) {
-                    const { email, password } = parsedCredentials.data;
+                    const { name, password } = parsedCredentials.data;
 
-                    const user = await getUser(email);
+                    const user = await getUser(name);
                     if (!user) return null;
 
                     const passwordsMatch = await bcrypt.compare(password, user.password);
