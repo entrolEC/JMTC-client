@@ -77,7 +77,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; c
     const initialState = { message: null, errors: {} };
     const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
     const defaultUnitType = getDefaultUnitType(item.code, quotation.mode); // 모드와 코드에 따른 기본 유닛타입
-    const [unitType, setUnitType] = useState(item.unitType);
+    const [unitType, setUnitType] = useState(defaultUnitType ?? item.unitType);
     const [value, setValue] = useState(getValueForUnitType(item.unitType, calculatedValue));
     const [price, setPrice] = useState(0);
     const [amount, setAmount] = useState(0);
