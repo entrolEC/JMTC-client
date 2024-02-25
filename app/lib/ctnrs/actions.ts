@@ -9,6 +9,7 @@ const FormSchema = z.object({
     id: z.string(),
     code: z.string().min(1, "코드를 입력해주세요."),
     name: z.string().min(1, "이름을 입력해주세요."),
+    containerMode: z.coerce.boolean(),
     description: z.nullable(z.string()),
 });
 
@@ -20,6 +21,7 @@ export type State = {
     errors?: {
         code?: string[];
         name?: string[];
+        containerMode?: string[];
         descrtion?: string[];
     };
     message?: string | null;
@@ -30,6 +32,7 @@ export async function createCtnr(prevState: State, formData: FormData) {
     const validatedFields = CreateCtnr.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
+        containerMode: formData.get("container_mode"),
         description: formData.get("description"),
     });
 
@@ -42,7 +45,7 @@ export async function createCtnr(prevState: State, formData: FormData) {
     }
 
     // Prepare data for insertion into the database
-    const { code, name, description } = validatedFields.data;
+    const { code, name, containerMode, description } = validatedFields.data;
 
     // Insert data into the database using Prisma
     try {
@@ -50,6 +53,7 @@ export async function createCtnr(prevState: State, formData: FormData) {
             data: {
                 code: code,
                 name: name,
+                containerMode: containerMode,
                 description: description,
             },
         });
@@ -74,6 +78,7 @@ export async function updateCtnr(id: string, prevState: State, formData: FormDat
     const validatedFields = UpdateCtnr.safeParse({
         code: formData.get("code"),
         name: formData.get("name"),
+        containerMode: formData.get("container_mode"),
         description: formData.get("description"),
     });
 
@@ -84,7 +89,7 @@ export async function updateCtnr(id: string, prevState: State, formData: FormDat
         };
     }
 
-    const { code, name, description } = validatedFields.data;
+    const { code, name, containerMode, description } = validatedFields.data;
 
     // Update the database record using Prisma
     try {
@@ -93,6 +98,7 @@ export async function updateCtnr(id: string, prevState: State, formData: FormDat
             data: {
                 code: code,
                 name: name,
+                containerMode: containerMode,
                 description: description,
             },
         });

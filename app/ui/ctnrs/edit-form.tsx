@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Ctnr } from ".prisma/client";
 import { updateCtnr } from "@/app/lib/ctnrs/actions";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function CtnrEditForm({ ctnr }: { ctnr: Ctnr }) {
     const initialState = { message: null, errors: {} };
@@ -43,6 +44,22 @@ export default function CtnrEditForm({ ctnr }: { ctnr: Ctnr }) {
                 <div id="name-error" aria-live="polite" aria-atomic="true">
                     {state.errors?.name &&
                         state.errors.name.map((error: string) => (
+                            <p className="mt-2 text-sm text-red-500" key={error}>
+                                {error}
+                            </p>
+                        ))}
+                </div>
+            </div>
+            <div className="mb-4">
+                <div className="flex items-center space-x-2">
+                    <Checkbox id="container_mode" name="container_mode" defaultChecked={ctnr.containerMode} />
+                    <label htmlFor="container_mode" className="block text-sm font-medium">
+                        컨테이너 모드
+                    </label>
+                </div>
+                <div id="container-mode-error" aria-live="polite" aria-atomic="true">
+                    {state.errors?.containerMode &&
+                        state.errors.containerMode.map((error: string) => (
                             <p className="mt-2 text-sm text-red-500" key={error}>
                                 {error}
                             </p>

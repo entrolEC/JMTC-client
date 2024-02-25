@@ -284,6 +284,9 @@ export async function fetchFilteredQuotations(query: string) {
                     },
                 ],
             },
+            include: {
+                ctnr: true,
+            },
         });
 
         return fetchFilteredQuotations;

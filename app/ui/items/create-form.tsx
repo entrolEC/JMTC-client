@@ -65,7 +65,7 @@ export default function ItemCreateForm() {
                         <SelectItem value="SHIP">SHIP</SelectItem>
                     </SelectContent>
                 </Select>
-                <div id="customer-error" aria-live="polite" aria-atomic="true">
+                <div id="unit-type-error" aria-live="polite" aria-atomic="true">
                     {state.errors?.unitType &&
                         state.errors.unitType.map((error: string) => (
                             <p className="mt-2 text-sm text-red-500" key={error}>
@@ -82,7 +82,7 @@ export default function ItemCreateForm() {
                         VAT
                     </label>
                 </div>
-                <div id="name-error" aria-live="polite" aria-atomic="true">
+                <div id="vat-error" aria-live="polite" aria-atomic="true">
                     {state.errors?.vat &&
                         state.errors.vat.map((error: string) => (
                             <p className="mt-2 text-sm text-red-500" key={error}>

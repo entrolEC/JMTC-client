@@ -1,9 +1,9 @@
-import { Quote } from "@prisma/client";
 import { DeleteQuotation, QuotationDetail, UpdateQuotation } from "@/app/ui/quotations/buttons";
 import { formatDateToLocal } from "@/app/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { QuoteWithCtnr } from "@/app/lib/definitions";
 
-export default function QuotationsTable({ quotations }: { quotations: Quote[] }) {
+export default function QuotationsTable({ quotations }: { quotations: QuoteWithCtnr[] }) {
     return (
         <Table>
             <TableHeader>
@@ -37,7 +37,7 @@ export default function QuotationsTable({ quotations }: { quotations: Quote[] })
                         <TableCell>{quotation.exchangeRate}</TableCell>
                         <TableCell>{quotation.loadingPort}</TableCell>
                         <TableCell>{quotation.dischargePort}</TableCell>
-                        <TableCell>{quotation.ctnr}</TableCell>
+                        <TableCell>{quotation.ctnr.name}</TableCell>
                         <TableCell>{quotation.incoterm}</TableCell>
                         <TableCell className="text-right">{formatDateToLocal(quotation.createdAt)}</TableCell>
                         <TableCell>

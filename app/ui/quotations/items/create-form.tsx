@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormState } from "react-dom";
-import { Currency, Item, Quote } from "@prisma/client";
+import { Currency, Item } from "@prisma/client";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useCallback, useEffect, useState } from "react";
@@ -14,8 +14,17 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { calculateValue, getDefaultUnitType, getValueForUnitType } from "@/app/lib/bussinessUtil";
+import { QuoteWithCtnr } from "@/app/lib/definitions";
 
-export default function QuotationItemCreateForm({ items, quotation, currencies }: { items: Item[]; quotation: Quote; currencies: Currency[] }) {
+export default function QuotationItemCreateForm({
+    items,
+    quotation,
+    currencies,
+}: {
+    items: Item[];
+    quotation: QuoteWithCtnr;
+    currencies: Currency[];
+}) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState<Item>();
     const selections = items.map((item) => ({
@@ -73,10 +82,10 @@ export default function QuotationItemCreateForm({ items, quotation, currencies }
     );
 }
 
-function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; currencies: Currency[] }) {
+function Form({ item, quotation, currencies }: { item: Item; quotation: QuoteWithCtnr; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
     const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
-    const defaultUnitType = getDefaultUnitType(item.unitType, quotation.mode); // 모드와 기본유닛타입에 따른 유닛타입
+    const defaultUnitType = getDefaultUnitType(item.unitType, quotation.mode, quotation.ctnr); // 모드와 기본유닛타입에 따른 유닛타입
     const [unitType, setUnitType] = useState(defaultUnitType ?? item.unitType);
     const [value, setValue] = useState(getValueForUnitType(item.unitType, calculatedValue));
     const [price, setPrice] = useState(0);

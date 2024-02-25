@@ -6,6 +6,9 @@ export async function fetchQuotationById(id: string) {
     try {
         const quotation = await prisma.quote.findUnique({
             where: { id: id },
+            include: {
+                ctnr: true,
+            },
         });
 
         return quotation;

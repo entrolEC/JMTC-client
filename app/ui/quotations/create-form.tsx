@@ -36,7 +36,7 @@ export default function QuotationCreateForm({
     const [dischargePort, setDischargePort] = useState<Port>();
     const [ctnr, setCtnr] = useState<Ctnr>();
     const [incoterm, setIncoterm] = useState<Incoterm>();
-    const createQuotationWithSelection = createQuotation.bind(null, currency, loadingPort?.name, dischargePort?.name, ctnr?.name, incoterm?.name);
+    const createQuotationWithSelection = createQuotation.bind(null, currency, loadingPort?.name, dischargePort?.name, ctnr?.id, incoterm?.name);
     const [state, dispatch] = useFormState(createQuotationWithSelection, initialState);
 
     const currencySelections = currencies.map((currency) => ({

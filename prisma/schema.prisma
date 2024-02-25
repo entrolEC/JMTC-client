@@ -53,7 +53,8 @@ model Quote {
   dischargePort String
   loadingPort   String
   incoterm      String
-  ctnr          String
+  ctnr_id       String
+  ctnr          Ctnr        @relation(fields: [ctnr_id], references: [id])
   cargoMode     String      @default("AIR CARGO")
   QuoteItem     QuoteItem[]
   createdAt     DateTime    @default(now())
@@ -97,10 +98,12 @@ model Port {
 }
 
 model Ctnr {
-  id          String  @id @default(uuid())
-  code        String
-  name        String
-  description String?
+  id            String  @id @default(uuid())
+  code          String
+  name          String
+  containerMode Boolean @default(false)
+  description   String?
+  Quote         Quote[]
 }
 
 model Incoterm {
