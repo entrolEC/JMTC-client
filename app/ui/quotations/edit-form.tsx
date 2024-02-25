@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormState } from "react-dom";
-import { Currency, Quote } from "@prisma/client";
+import { Currency } from "@prisma/client";
 import { updateQuotation } from "@/app/lib/quotations/actions";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Ctnr, Incoterm, Port } from ".prisma/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { QuoteWithCtnr } from "@/app/lib/definitions";
 
 export default function QuotationEditForm({
     quotation,
@@ -20,7 +21,7 @@ export default function QuotationEditForm({
     ctnrs,
     incoterms,
 }: {
-    quotation: Quote;
+    quotation: QuoteWithCtnr;
     currencies: Currency[];
     ports: Port[];
     ctnrs: Ctnr[];
@@ -33,7 +34,7 @@ export default function QuotationEditForm({
     const [incotermOpen, setIncotermOpen] = useState(false);
     const [loadingPort, setLoadingPort] = useState<Port | undefined>(ports.find((port) => quotation.loadingPort === port.name));
     const [dischargePort, setDischargePort] = useState<Port | undefined>(ports.find((port) => quotation.dischargePort === port.name));
-    const [ctnr, setCtnr] = useState<Ctnr | undefined>(ctnrs.find((ctnr) => quotation.ctnr === ctnr.name));
+    const [ctnr, setCtnr] = useState<Ctnr | undefined>(ctnrs.find((ctnr) => quotation.ctnr.name === ctnr.name));
     const [incoterm, setIncoterm] = useState<Incoterm | undefined>(incoterms.find((incoterm) => quotation.incoterm === incoterm.name));
     const [currency, setCurrency] = useState<string | undefined>(quotation.currency);
     const updateQuotationWithId = updateQuotation.bind(
