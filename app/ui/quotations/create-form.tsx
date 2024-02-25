@@ -62,28 +62,49 @@ export default function QuotationCreateForm({
     return (
         <form action={dispatch}>
             <div className="rounded-md p-4 md:p-6">
-                <div className="mb-4">
-                    <Select name="mode" aria-describedby="mode-error">
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="mode 선택.." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="OCN IMPORT">OCN IMPORT</SelectItem>
-                            <SelectItem value="AIR IMPORT">AIR IMPORT</SelectItem>
-                            <SelectItem value="OCN EXPORT">OCN EXPORT</SelectItem>
-                            <SelectItem value="AIR EXPORT">AIR EXPORT</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <div id="mode-error" aria-live="polite" aria-atomic="true">
-                        {state.errors?.mode &&
-                            state.errors.mode.map((error: string) => (
-                                <p className="mt-2 text-sm text-red-500" key={error}>
-                                    {error}
-                                </p>
-                            ))}
+                <div className="flex space-x-4">
+                    <div className="mb-4">
+                        <Select name="mode" aria-describedby="mode-error">
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="mode 선택.." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="OCN IMPORT">OCN IMPORT</SelectItem>
+                                <SelectItem value="AIR IMPORT">AIR IMPORT</SelectItem>
+                                <SelectItem value="OCN EXPORT">OCN EXPORT</SelectItem>
+                                <SelectItem value="AIR EXPORT">AIR EXPORT</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <div id="mode-error" aria-live="polite" aria-atomic="true">
+                            {state.errors?.mode &&
+                                state.errors.mode.map((error: string) => (
+                                    <p className="mt-2 text-sm text-red-500" key={error}>
+                                        {error}
+                                    </p>
+                                ))}
+                        </div>
+                    </div>
+                    <div className="mb-4">
+                        <Select name="cargo_mode" aria-describedby="cargo_mode-error">
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="cargo mode 선택.." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="LCL">LCL</SelectItem>
+                                <SelectItem value="FCL">FCL</SelectItem>
+                                <SelectItem value="AIR_CARGO">AIR_CARGO</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <div id="cargo_mode-error" aria-live="polite" aria-atomic="true">
+                            {state.errors?.cargoMode &&
+                                state.errors.cargoMode.map((error: string) => (
+                                    <p className="mt-2 text-sm text-red-500" key={error}>
+                                        {error}
+                                    </p>
+                                ))}
+                        </div>
                     </div>
                 </div>
-
                 <div className="flex space-x-4">
                     <div className="mb-4">
                         <label htmlFor="loading_port" className="mb-2 block text-sm font-medium">
@@ -391,13 +412,13 @@ export default function QuotationCreateForm({
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="grossWeight" className="mb-2 block text-sm font-medium">
+                    <label htmlFor="gross_weight" className="mb-2 block text-sm font-medium">
                         GrossWeight
                     </label>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
                             <Input
-                                id="grossWeight"
+                                id="gross_weight"
                                 name="grossWeight"
                                 type="number"
                                 step={0.01}
@@ -407,7 +428,7 @@ export default function QuotationCreateForm({
                         </div>
                     </div>
 
-                    <div id="grossWeight-error" aria-live="polite" aria-atomic="true">
+                    <div id="gross_weight-error" aria-live="polite" aria-atomic="true">
                         {state.errors?.grossWeight &&
                             state.errors.grossWeight.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>

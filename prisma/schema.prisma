@@ -54,6 +54,7 @@ model Quote {
   loadingPort   String
   incoterm      String
   ctnr          String
+  cargoMode     String      @default("AIR CARGO")
   QuoteItem     QuoteItem[]
   createdAt     DateTime    @default(now())
 }

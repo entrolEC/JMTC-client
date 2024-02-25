@@ -76,7 +76,7 @@ export default function QuotationItemCreateForm({ items, quotation, currencies }
 function Form({ item, quotation, currencies }: { item: Item; quotation: Quote; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
     const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
-    const defaultUnitType = getDefaultUnitType(item.code, quotation.mode); // 모드와 코드에 따른 기본 유닛타입
+    const defaultUnitType = getDefaultUnitType(item.unitType, quotation.mode); // 모드와 기본유닛타입에 따른 유닛타입
     const [unitType, setUnitType] = useState(defaultUnitType ?? item.unitType);
     const [value, setValue] = useState(getValueForUnitType(item.unitType, calculatedValue));
     const [price, setPrice] = useState(0);

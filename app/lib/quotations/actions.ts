@@ -9,6 +9,7 @@ import { auth, signOut } from "@/auth";
 const FormSchema = z.object({
     id: z.string(),
     mode: z.string(),
+    cargoMode: z.string(),
     value: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
     manager: z.string().min(1, "담당자를 입력해주세요"),
     grossWeight: z.nullable(z.coerce.number()),
@@ -28,6 +29,7 @@ const UpdateQuotation = FormSchema.omit({ date: true, id: true, writer: true, mo
 export type State = {
     errors?: {
         mode?: string[];
+        cargoMode?: string[];
         value?: string[];
         manager?: string[];
         currency?: string[];
@@ -54,9 +56,10 @@ export async function createQuotation(
     // Validate form fields using Zod
     const validatedFields = CreateQuotation.safeParse({
         mode: formData.get("mode"),
+        cargoMode: formData.get("cargo_mode"),
         manager: formData.get("manager"),
         value: formData.get("value"),
-        grossWeight: formData.get("grossWeight"),
+        grossWeight: formData.get("gross_weight"),
         currency: _currency,
         loadingPort: _loadingPort,
         dischargePort: _dischargePort,
@@ -81,13 +84,14 @@ export async function createQuotation(
     }
 
     // Prepare data for insertion into the database
-    const { mode, manager, value, grossWeight, currency, exchangeRate, dischargePort, loadingPort, incoterm, ctnr } = validatedFields.data;
+    const { mode, cargoMode, manager, value, grossWeight, currency, exchangeRate, dischargePort, loadingPort, incoterm, ctnr } = validatedFields.data;
 
     // Insert data into the database using Prisma
     try {
         await prisma.quote.create({
             data: {
                 mode: mode,
+                cargoMode: cargoMode,
                 grossWeight: grossWeight,
                 value: value,
                 manager: manager,

@@ -24,26 +24,23 @@ export function calculateValue(mode: string, value: number, grossWeight: number)
 }
 
 export function getValueForUnitType(unitType: string, calculatedValue: number | undefined) {
-    if (unitType === "BL") {
+    if (unitType === "BL" || unitType === "SHIP") {
         return 1;
     } else {
         return calculatedValue ?? 0;
     }
 }
 
-const unitTypeForCodeAIR: { [code: string]: string } = {
-    THC: "KG",
-    WHC: "KG",
-};
+// 유닛타입 변환이 자동으로 KG으로 변하지 않아야 하는 유닛타입 목록
+const convertExcludeUnitType: string[] = ["BL", "SHIP", "20`", "40`"];
 
-const unitTypeForCodeOCN: { [code: string]: string } = {
-    THC: "CBM",
-    WHC: "CBM",
-};
-export function getDefaultUnitType(code: string, mode: string) {
+export function getDefaultUnitType(unitType: string, mode: string) {
+    if (convertExcludeUnitType.includes(unitType)) {
+        return unitType;
+    }
     if (isModeAir(mode)) {
-        return unitTypeForCodeAIR[code];
+        return "KG";
     } else {
-        return unitTypeForCodeOCN[code];
+        return "R.T";
     }
 }
