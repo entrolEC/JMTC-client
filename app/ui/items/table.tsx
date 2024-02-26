@@ -2,6 +2,7 @@ import { Item } from "@prisma/client";
 import { DeleteItem, UpdateItem } from "@/app/ui/items/buttons";
 import { formatDateToLocal } from "@/app/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function ItemsTable({ items }: { items: Item[] }) {
     return (
@@ -24,7 +25,13 @@ export default function ItemsTable({ items }: { items: Item[] }) {
                         <TableCell className="font-bold">{item.code}</TableCell>
                         <TableCell>{item.name}</TableCell>
                         <TableCell>{item.unitType}</TableCell>
-                        <TableCell>{item.vat.toString()}</TableCell>
+                        <TableCell>
+                            {item.vat ? (
+                                <CheckIcon className="w-6" color="green" strokeWidth={3} />
+                            ) : (
+                                <XMarkIcon className="w-6" color="red" strokeWidth={3} />
+                            )}
+                        </TableCell>
                         <TableCell className="text-right">{formatDateToLocal(item.createdAt)}</TableCell>
                         <TableCell>
                             <div className="flex justify-end gap-3">

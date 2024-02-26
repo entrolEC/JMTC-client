@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createCtnr } from "@/app/lib/ctnrs/actions";
 import { Checkbox } from "@/components/ui/checkbox";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function CtnrCreateForm() {
     const initialState = { message: null, errors: {} };
@@ -52,9 +54,20 @@ export default function CtnrCreateForm() {
             <div className="mb-4">
                 <div className="flex items-center space-x-2">
                     <Checkbox id="container_mode" name="container_mode" />
-                    <label htmlFor="container_mode" className="block text-sm font-medium">
-                        컨테이너 모드
-                    </label>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger className="flex text-sm items-center space-x-1 font-medium" disabled>
+                                <p>컨테이너 모드</p>
+                                <InformationCircleIcon className="w-6" />
+                                <TooltipContent>
+                                    <p>
+                                        컨테이너 모드를 활성화하면, 견적서에 추가 시 견적서 항목의 UnitType이 자동으로 컨테이너 단위와 동일하게
+                                        설정됩니다.
+                                    </p>
+                                </TooltipContent>
+                            </TooltipTrigger>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
                 <div id="container-mode-error" aria-live="polite" aria-atomic="true">
                     {state.errors?.containerMode &&
