@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/app/lib/prismaClient";
 import { auth, signOut } from "@/auth";
+import { QuoteWithCtnr } from "@/app/lib/definitions";
 
 const FormSchema = z.object({
     id: z.string(),
@@ -170,6 +171,53 @@ export async function updateQuotation(
         });
     } catch (error) {
         return { message: "Database Error: Failed to Update Quotation." };
+    }
+
+    revalidatePath("/dashboard/quotations");
+    redirect("/dashboard/quotations");
+}
+
+export async function updateQuotationWithObject(quote: QuoteWithCtnr | undefined, prevState: State, formData: FormData) {
+    if (quote === undefined) {
+        throw new Error("견적서 업데이트 실패: Object를 찾을 수 없음");
+    }
+
+    const validatedFields = UpdateQuotation.safeParse({
+        cargoMode: quote.cargoMode,
+        grossWeight: quote.grossWeight,
+        manager: quote.manager,
+        value: quote.value,
+        currency: quote.currency,
+        loadingPort: quote.loadingPort,
+        dischargePort: quote.dischargePort,
+        ctnr: quote.ctnr.id,
+        incoterm: quote.incoterm,
+        exchangeRate: quote.exchangeRate,
+    });
+
+    if (!validatedFields.success) {
+        throw new Error(`견적서 업데이트 실패: ${validatedFields.error.errors[0].message}`);
+    }
+
+    const { value, manager, grossWeight, currency, loadingPort, dischargePort, ctnr, incoterm, exchangeRate } = validatedFields.data;
+    // Update the database record using Prisma
+    try {
+        await prisma.quote.update({
+            where: { id: quote.id },
+            data: {
+                grossWeight: grossWeight,
+                value: value,
+                manager: manager,
+                currency: currency,
+                ctnr_id: ctnr,
+                incoterm: incoterm,
+                loadingPort: loadingPort,
+                dischargePort: dischargePort,
+                exchangeRate: exchangeRate,
+            },
+        });
+    } catch (error) {
+        throw new Error("견적서 업데이트 실패: 데이터베이스 오류");
     }
 
     revalidatePath("/dashboard/quotations");
