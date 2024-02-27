@@ -1,17 +1,6 @@
 import prisma from "@/app/lib/prismaClient";
 import { unstable_noStore as noStore } from "next/dist/server/web/spec-extension/unstable-no-store";
 
-export async function fetchCurrencies() {
-    try {
-        const fetchFilteredPorts = await prisma.currency.findMany();
-
-        return fetchFilteredCurrencies;
-    } catch (error) {
-        console.error("Failed to fetch currencies:", error);
-        throw new Error("Failed to fetch currencies.");
-    }
-}
-
 export async function fetchFilteredCurrencies(query: string) {
     try {
         const fetchFilteredCurrencies = await prisma.currency.findMany({
@@ -69,5 +58,16 @@ export async function fetchCurrenciesCode() {
     } catch (error) {
         console.error("Failed to fetch currencies:", error);
         throw new Error("Failed to fetch currencies code.");
+    }
+}
+
+export async function fetchCurrencies() {
+    try {
+        const currencies = await prisma.currency.findMany();
+
+        return currencies;
+    } catch (error) {
+        console.error("Failed to fetch currencies", error);
+        throw new Error("Failed to fetch currencies");
     }
 }

@@ -31,3 +31,63 @@ export async function fetchQuotationItemById(id: string) {
         throw new Error("Failed to fetch quotation item.");
     }
 }
+
+export async function fetchFilteredQuotationItems(id: string, query: string) {
+    try {
+        const quoteWithFilteredQuoteItems = await prisma.quote
+            .findUnique({
+                where: {
+                    id: id,
+                },
+                include: {
+                    QuoteItem: true,
+                },
+            })
+            .then((quote) => {
+                if (!quote) return null;
+                const filteredQuoteItems = quote.QuoteItem.filter((qi) => qi.code.includes(query) || qi.name.includes(query));
+
+                if (!filteredQuoteItems) return [];
+
+                return filteredQuoteItems;
+            });
+
+        if (!quoteWithFilteredQuoteItems) return [];
+
+        return quoteWithFilteredQuoteItems;
+    } catch (error) {
+        console.error("Failed to fetch quotation items:", error);
+        throw new Error("Failed to fetch quotation items");
+    }
+}
+
+export async function fetchFilteredQuotations(query: string) {
+    try {
+        const fetchFilteredQuotations = await prisma.quote.findMany({
+            where: {
+                OR: [
+                    {
+                        writer: {
+                            contains: query,
+                            mode: "insensitive",
+                        },
+                    },
+                    {
+                        manager: {
+                            contains: query,
+                            mode: "insensitive",
+                        },
+                    },
+                ],
+            },
+            include: {
+                ctnr: true,
+            },
+        });
+
+        return fetchFilteredQuotations;
+    } catch (error) {
+        console.error("Failed to fetch quotations:", error);
+        throw new Error("Failed to fetch quotations.");
+    }
+}
