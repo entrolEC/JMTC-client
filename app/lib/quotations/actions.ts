@@ -199,12 +199,13 @@ export async function updateQuotationWithObject(quote: QuoteWithCtnr | undefined
         throw new Error(`견적서 업데이트 실패: ${validatedFields.error.errors[0].message}`);
     }
 
-    const { value, manager, grossWeight, currency, loadingPort, dischargePort, ctnr, incoterm, exchangeRate } = validatedFields.data;
+    const { cargoMode, value, manager, grossWeight, currency, loadingPort, dischargePort, ctnr, incoterm, exchangeRate } = validatedFields.data;
     // Update the database record using Prisma
     try {
         await prisma.quote.update({
             where: { id: quote.id },
             data: {
+                cargoMode: cargoMode,
                 grossWeight: grossWeight,
                 value: value,
                 manager: manager,

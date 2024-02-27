@@ -15,8 +15,19 @@ export default function QuotationsTable({ quotations }: { quotations: QuoteWithC
     const [state, setState] = useState({ message: "" }); // Initialize state for error messages
 
     const [columnDefs, setColumnDefs] = useState<(ColDef<any, any> | ColGroupDef<any>)[]>([
-        { headerName: "모드", field: "mode" },
-        { headerName: "Cargo mode", field: "cargoMode" },
+        {
+            headerName: "모드",
+            field: "mode",
+            editable: false,
+        },
+        {
+            headerName: "Cargo mode",
+            field: "cargoMode",
+            cellEditor: "agSelectCellEditor",
+            cellEditorParams: {
+                values: ["LCL", "FCL", "AIR_CARGO"],
+            },
+        },
         { headerName: "담당자", field: "manager" },
         { headerName: "작성자", field: "writer" },
         { headerName: "Value", field: "value" },
