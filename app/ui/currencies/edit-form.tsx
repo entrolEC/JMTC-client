@@ -52,7 +52,7 @@ export default function CurrencyEditForm({ currency }: { currency: Currency }) {
 
             <p className="mt-2 text-sm font-bold text-red-500">{state.message}</p>
             <div className="mt-6 flex justify-end gap-4">
-                <Button type="submit">Incoterm 수정</Button>
+                <Button type="submit">통화 수정</Button>
             </div>
         </form>
     );
