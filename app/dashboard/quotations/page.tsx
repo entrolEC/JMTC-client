@@ -1,12 +1,16 @@
 import { Metadata } from "next";
 
-import { fetchFilteredQuotations } from "@/app/lib/data";
 import { lusitana } from "@/app/ui/fonts";
 import Search from "@/app/ui/search";
 import { Suspense } from "react";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import QuotationsTable from "@/app/ui/quotations/table";
 import { CreateQuotation } from "@/app/ui/quotations/buttons";
+import { fetchCurrencies } from "@/app/lib/currencies/data";
+import { fetchFilteredQuotations } from "@/app/lib/quotations/data";
+import { fetchPorts } from "@/app/lib/ports/data";
+import { fetchCtnrs } from "@/app/lib/ctnrs/data";
+import { fetchIncoterms } from "@/app/lib/incoterms/data";
 
 export const metadata: Metadata = {
     title: "quotation",
@@ -22,7 +26,13 @@ export default async function Page({
 }) {
     const query = searchParams?.query?.toLowerCase() || "";
 
-    const quotations = await fetchFilteredQuotations(query);
+    const [quotations, currencies, ports, ctnrs, incoterms] = await Promise.all([
+        fetchFilteredQuotations(query),
+        fetchCurrencies(),
+        fetchPorts(),
+        fetchCtnrs(),
+        fetchIncoterms(),
+    ]);
 
     return (
         <div className="w-full">
@@ -34,7 +44,7 @@ export default async function Page({
                 <CreateQuotation />
             </div>
             <Suspense key={query} fallback={<InvoicesTableSkeleton />}>
-                <QuotationsTable quotations={quotations} />
+                <QuotationsTable quotations={quotations} currencies={currencies} ports={ports} ctnrs={ctnrs} incoterms={incoterms} />
             </Suspense>
         </div>
     );
