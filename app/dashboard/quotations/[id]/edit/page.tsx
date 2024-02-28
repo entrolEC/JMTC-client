@@ -2,11 +2,11 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { fetchQuotationById } from "@/app/lib/quotations/data";
 import QuotationEditForm from "@/app/ui/quotations/edit-form";
-import { fetchCurrencies } from "@/app/lib/data";
 import { fetchPorts } from "@/app/lib/ports/data";
 import { fetchCtnrs } from "@/app/lib/ctnrs/data";
 import { fetchIncoterms } from "@/app/lib/incoterms/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
+import { fetchCurrencies } from "@/app/lib/currencies/data";
 
 export const metadata: Metadata = {
     title: "Edit Item",

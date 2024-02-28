@@ -1,12 +1,12 @@
 import { Metadata } from "next";
 
-import { fetchFilteredQuotationItems } from "@/app/lib/data";
 import { lusitana } from "@/app/ui/fonts";
 import Search from "@/app/ui/search";
 import { Suspense } from "react";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { CreateQuotationItem } from "@/app/ui/quotations/items/buttons";
 import QuotationItemsTable from "@/app/ui/quotations/items/table";
+import { fetchFilteredQuotationItems } from "@/app/lib/quotations/data";
 
 export const metadata: Metadata = {
     title: "quotation items",

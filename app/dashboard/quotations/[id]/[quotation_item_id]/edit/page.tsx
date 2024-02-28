@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { fetchQuotationById, fetchQuotationItemById } from "@/app/lib/quotations/data";
 import QuotationItemEditForm from "@/app/ui/quotations/items/edit-form";
-import { fetchCurrencies } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/breadcrumbs";
+import { fetchCurrencies } from "@/app/lib/currencies/data";
 
 export const metadata: Metadata = {
     title: "Edit Item",
