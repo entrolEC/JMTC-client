@@ -156,7 +156,6 @@ export default function QuotationsTable({
 
     return (
         <div className="w-full h-screen ag-theme-quartz">
-            <p className="mt-2 text-sm font-bold text-red-500">{state.message}</p>
             <AgGridReact
                 ref={gridRef}
                 components={{ customCtnrEditor: CtnrCombobox, quotationDetail: QuotationDetail, deleteQuotation: DeleteQuotation }}

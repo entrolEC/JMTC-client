@@ -4,7 +4,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/app/lib/prismaClient";
-import { Quote } from "@prisma/client";
+import { Quote, QuoteItem } from "@prisma/client";
+import { QuoteWithCtnr } from "@/app/lib/definitions";
 
 const FormSchema = z.object({
     id: z.string(),
@@ -17,7 +18,7 @@ const FormSchema = z.object({
 });
 
 const CreateQuotationItem = FormSchema.omit({ id: true });
-const UpdateQuotationItem = FormSchema.omit({ id: true });
+const UpdateQuotationItem = FormSchema.omit({ id: true, code: true, name: true });
 
 // This is temporary
 export type State = {
@@ -117,7 +118,7 @@ export async function updateQuotationItem(
         };
     }
 
-    const { code, name, unitType, value, currency, price } = validatedFields.data;
+    const { unitType, value, currency, price } = validatedFields.data;
 
     let amount = value * price;
     if (currency !== "KRW") {
@@ -134,8 +135,6 @@ export async function updateQuotationItem(
         await prisma.quoteItem.update({
             where: { id: id },
             data: {
-                code: code,
-                name: name,
                 quote_id: quotationId,
                 unitType: unitType,
                 value: value,
@@ -147,6 +146,62 @@ export async function updateQuotationItem(
         });
     } catch (error) {
         return { message: "Database Error: Failed to Update QuoteItem." };
+    }
+
+    revalidatePath(`/dashboard/quotations/${quotationId}`);
+    redirect(`/dashboard/quotations/${quotationId}`);
+}
+
+export async function updateQuotationItemWithObject(
+    quoteItem: QuoteItem | undefined,
+    quotation: QuoteWithCtnr,
+    prevState: State,
+    formData: FormData,
+) {
+    const { id: quotationId, exchangeRate } = quotation;
+
+    if (quoteItem === undefined) {
+        throw new Error("견적서 항목 업데이트 실패: Object를 찾을 수 없음");
+    }
+
+    const validatedFields = UpdateQuotationItem.safeParse({
+        unitType: quoteItem.unitType,
+        value: quoteItem.value,
+        currency: quoteItem.currency,
+        price: quoteItem.price,
+    });
+
+    if (!validatedFields.success) {
+        throw new Error(`견적서 항목 업데이트 실패: ${validatedFields.error.errors[0].message}`);
+    }
+
+    const { unitType, value, currency, price } = validatedFields.data;
+
+    let amount = value * price;
+    if (currency !== "KRW") {
+        amount *= exchangeRate;
+    }
+    const vatRate = 0.1;
+    let vat = 0;
+    if (quoteItem.vat > 0) {
+        vat = Math.round(amount * vatRate * 100) / 100;
+    }
+
+    try {
+        await prisma.quoteItem.update({
+            where: { id: quoteItem.id },
+            data: {
+                unitType: unitType,
+                value: value,
+                currency: currency,
+                price: price,
+                quote_id: quotationId,
+                amount: amount,
+                vat: vat,
+            },
+        });
+    } catch (error) {
+        throw new Error("견적서 항목 업데이트 실패: 데이터베이스 오류");
     }
 
     revalidatePath(`/dashboard/quotations/${quotationId}`);

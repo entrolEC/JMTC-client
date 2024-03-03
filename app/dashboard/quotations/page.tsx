@@ -39,7 +39,7 @@ export default async function Page({
             <div className="flex w-full items-center justify-between">
                 <h1 className={`${lusitana.className} text-2xl`}>견적서</h1>
             </div>
-            <div className="mt-4 flex items-center justify-between gap-2 md:mt-8 mb-4">
+            <div className="my-4 flex items-center justify-between gap-2 md:mt-8">
                 <Search placeholder="견적서 검색..." />
                 <CreateQuotation />
             </div>
