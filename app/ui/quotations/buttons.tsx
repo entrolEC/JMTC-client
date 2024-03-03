@@ -1,6 +1,7 @@
 import { DocumentMagnifyingGlassIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { deleteQuotation } from "@/app/lib/quotations/actions";
+import { useRouter } from "next/navigation";
 
 export function CreateQuotation() {
     return (
@@ -14,11 +15,17 @@ export function CreateQuotation() {
     );
 }
 
-export function QuotationDetail({ id }: { id: string }) {
+export function QuotationDetail(props: any) {
+    const router = useRouter();
+    const handleClick = () => {
+        const id = props.data.id;
+        router.push(`/dashboard/quotations/${id}/`);
+    };
+
     return (
-        <Link href={`/dashboard/quotations/${id}`} className="rounded-md border p-2 hover:bg-gray-100">
+        <button onClick={handleClick} className="rounded-md border p-2 hover:bg-gray-100">
             <DocumentMagnifyingGlassIcon className="w-5" />
-        </Link>
+        </button>
     );
 }
 
@@ -30,15 +37,15 @@ export function UpdateQuotation({ id }: { id: string }) {
     );
 }
 
-export function DeleteQuotation({ id }: { id: string }) {
-    const deleteQuotationWithId = deleteQuotation.bind(null, id);
+export function DeleteQuotation(props: any) {
+    const handleClick = () => {
+        const id = props.data.id;
+        deleteQuotation(id);
+    };
 
     return (
-        <form action={deleteQuotationWithId}>
-            <button className="rounded-md border p-2 hover:bg-gray-100">
-                <span className="sr-only">Delete</span>
-                <TrashIcon className="w-5" />
-            </button>
-        </form>
+        <button onClick={handleClick} className="rounded-md border p-2 hover:bg-gray-100">
+            <TrashIcon className="w-5" />
+        </button>
     );
 }

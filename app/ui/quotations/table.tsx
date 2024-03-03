@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Currency } from "@prisma/client";
 import { Ctnr, Incoterm, Port } from ".prisma/client";
 import CtnrCombobox from "@/app/ui/ctnrs/ctnr-combobox";
+import { DeleteQuotation, QuotationDetail } from "@/app/ui/quotations/buttons";
 
 let rowImmutableStore: any[] = [];
 export default function QuotationsTable({
@@ -30,6 +31,14 @@ export default function QuotationsTable({
     const [state, setState] = useState({ message: "" }); // Initialize state for error messages
 
     const [columnDefs, setColumnDefs] = useState<(ColDef<any, any> | ColGroupDef<any>)[]>([
+        {
+            headerName: "상세",
+            cellRenderer: "quotationDetail",
+            width: 70,
+            editable: false,
+            sortable: false,
+            filter: false,
+        },
         {
             headerName: "모드",
             field: "mode",
@@ -79,17 +88,7 @@ export default function QuotationsTable({
             cellEditorParams: {
                 ctnrs: ctnrs,
             },
-            valueGetter: (params) => ctnrs.find((ctnr) => ctnr.id === params.data.ctnr.id)?.name, // ctnr이 있으면 그 이름을 표시
-            valueSetter: (params) => {
-                // 사용자가 선택한 name 값으로 ctnr 객체를 찾음
-                const selectedCtnr = ctnrs.find((ctnr) => ctnr.id === params.newValue.id);
-                if (selectedCtnr) {
-                    // 실제 객체를 셀의 값으로 설정
-                    params.data.ctnr = selectedCtnr;
-                    return true; // 데이터가 변경됨을 알림
-                }
-                return false; // 데이터 변경이 없으면 false 반환
-            },
+            valueGetter: (params) => ctnrs.find((ctnr) => ctnr.id === params.data.ctnr.id)?.name,
         },
         {
             headerName: "INCOTERMS",
@@ -99,7 +98,15 @@ export default function QuotationsTable({
                 values: incoterms.map((incoterm) => incoterm.name),
             },
         },
-        { headerName: "작성일", field: "createdAt", valueFormatter: (params) => formatDateToLocal(params.value), editable: false },
+        { headerName: "작성일", field: "createdAt", valueFormatter: (params) => formatDateToLocal(params.value), editable: false, sort: "desc" },
+        {
+            headerName: "삭제",
+            cellRenderer: "deleteQuotation",
+            width: 70,
+            editable: false,
+            sortable: false,
+            filter: false,
+        },
     ]);
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
@@ -109,7 +116,6 @@ export default function QuotationsTable({
     const defaultColDef = useMemo<ColDef>(() => {
         return {
             editable: true,
-            sortable: true,
             resizeable: true,
             filter: true,
             width: 150,
@@ -153,7 +159,7 @@ export default function QuotationsTable({
             <p className="mt-2 text-sm font-bold text-red-500">{state.message}</p>
             <AgGridReact
                 ref={gridRef}
-                components={{ customCtnrEditor: CtnrCombobox }}
+                components={{ customCtnrEditor: CtnrCombobox, quotationDetail: QuotationDetail, deleteQuotation: DeleteQuotation }}
                 onGridReady={onGridReady}
                 rowData={quotations}
                 columnDefs={columnDefs}
