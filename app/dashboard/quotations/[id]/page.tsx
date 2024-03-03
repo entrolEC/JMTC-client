@@ -8,6 +8,7 @@ import { CreateQuotationItem } from "@/app/ui/quotations/items/buttons";
 import QuotationItemsTableAgGrid from "@/app/ui/quotations/items/table";
 import { fetchFilteredQuotationItems, fetchQuotationById } from "@/app/lib/quotations/data";
 import { notFound } from "next/navigation";
+import { fetchCurrencies } from "@/app/lib/currencies/data";
 
 export const metadata: Metadata = {
     title: "quotation items",
@@ -27,7 +28,11 @@ export default async function Page({
 }) {
     const query = searchParams?.query?.toLowerCase() || "";
     const { id } = params;
-    const [quotationItems, quotation] = await Promise.all([fetchFilteredQuotationItems(id, query), fetchQuotationById(id)]);
+    const [quotationItems, quotation, currencies] = await Promise.all([
+        fetchFilteredQuotationItems(id, query),
+        fetchQuotationById(id),
+        fetchCurrencies(),
+    ]);
 
     if (!quotation) {
         notFound();
@@ -43,7 +48,7 @@ export default async function Page({
                 <CreateQuotationItem id={id} />
             </div>
             <Suspense key={query} fallback={<InvoicesTableSkeleton />}>
-                <QuotationItemsTableAgGrid quotationItems={quotationItems} quotation={quotation} />
+                <QuotationItemsTableAgGrid quotationItems={quotationItems} quotation={quotation} currencies={currencies} />
             </Suspense>
         </div>
     );

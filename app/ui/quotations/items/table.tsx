@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css"; // Import AG Grid styles
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Import AG Grid theme
 import { AgGridReact } from "ag-grid-react"; // Import AG Grid React
-import { QuoteItem } from "@prisma/client";
+import { Currency, QuoteItem } from "@prisma/client";
 import { DeleteQuotationItem, UpdateQuotationItem } from "@/app/ui/quotations/items/buttons";
 import { toast } from "sonner";
 import { CellEditRequestEvent, ColDef, GetRowIdFunc, GetRowIdParams, GridReadyEvent } from "ag-grid-community";
@@ -12,7 +12,15 @@ import { QuoteWithCtnr } from "@/app/lib/definitions";
 
 let rowImmutableStore: any[] = [];
 
-export default function QuotationItemsTableAgGrid({ quotationItems, quotation }: { quotationItems: QuoteItem[]; quotation: QuoteWithCtnr }) {
+export default function QuotationItemsTableAgGrid({
+    quotationItems,
+    quotation,
+    currencies,
+}: {
+    quotationItems: QuoteItem[];
+    quotation: QuoteWithCtnr;
+    currencies: Currency[];
+}) {
     const gridRef = useRef<AgGridReact<QuoteItem>>(null);
     const [state, setState] = useState({ message: "" });
 
@@ -20,9 +28,23 @@ export default function QuotationItemsTableAgGrid({ quotationItems, quotation }:
         () => [
             { headerName: "코드", field: "code", sortable: true, filter: true, editable: false },
             { headerName: "이름", field: "name", width: 200, editable: false },
-            { headerName: "U/T", field: "unitType" },
+            {
+                headerName: "U/T",
+                field: "unitType",
+                cellEditor: "agSelectCellEditor",
+                cellEditorParams: {
+                    values: ["CBM", "R.T", "BL", "KG", "40`", "20`", "SHIP"],
+                },
+            },
             { headerName: "Value", field: "value" },
-            { headerName: "통화", field: "currency" },
+            {
+                headerName: "통화",
+                field: "currency",
+                cellEditor: "agSelectCellEditor",
+                cellEditorParams: {
+                    values: currencies.map((currency) => currency.name),
+                },
+            },
             { headerName: "Price", field: "price" },
             {
                 headerName: "Amount",
