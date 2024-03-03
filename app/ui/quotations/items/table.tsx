@@ -4,7 +4,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Import AG Grid styles
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Import AG Grid theme
 import { AgGridReact } from "ag-grid-react"; // Import AG Grid React
 import { Currency, QuoteItem } from "@prisma/client";
-import { DeleteQuotationItem, UpdateQuotationItem } from "@/app/ui/quotations/items/buttons";
+import { DeleteQuotationItem } from "@/app/ui/quotations/items/buttons";
 import { toast } from "sonner";
 import { CellEditRequestEvent, ColDef, GetRowIdFunc, GetRowIdParams, GridReadyEvent } from "ag-grid-community";
 import { updateQuotationItemWithObject } from "@/app/lib/quotations/items/actions";
@@ -59,15 +59,15 @@ export default function QuotationItemsTableAgGrid({
                 editable: false,
             },
             {
-                headerName: "Actions",
-                cellRendererFramework: (params: GetRowIdParams) => (
-                    <div className="flex justify-end gap-3">
-                        <UpdateQuotationItem quotationId={params.data.quote_id} id={params.data.id} />
-                        <DeleteQuotationItem quotationId={params.data.quote_id} id={params.data.id} />
-                    </div>
-                ),
-                filter: false,
+                headerName: "삭제",
+                cellRenderer: "deleteQuotationItem",
+                cellEditorParams: {
+                    quotationId: quotation.id,
+                },
+                width: 70,
+                editable: false,
                 sortable: false,
+                filter: false,
             },
         ],
         [],
@@ -123,6 +123,7 @@ export default function QuotationItemsTableAgGrid({
         <div className="w-full h-screen ag-theme-quartz">
             <AgGridReact
                 ref={gridRef}
+                components={{ deleteQuotationItem: DeleteQuotationItem }}
                 rowData={quotationItems}
                 onGridReady={onGridReady}
                 columnDefs={columnDefs}

@@ -22,15 +22,15 @@ export function UpdateQuotationItem({ quotationId, id }: { quotationId: string; 
     );
 }
 
-export function DeleteQuotationItem({ quotationId, id }: { quotationId: string; id: string }) {
-    const deleteQuotationItemWithId = deleteQuotationItem.bind(null, quotationId, id);
+export function DeleteQuotationItem(props: any, { quotationId }: { quotationId: string }) {
+    const handleClick = () => {
+        const id = props.data.id;
+        deleteQuotationItem(quotationId, id);
+    };
 
     return (
-        <form action={deleteQuotationItemWithId}>
-            <button className="rounded-md border p-2 hover:bg-gray-100">
-                <span className="sr-only">삭제</span>
-                <TrashIcon className="w-5" />
-            </button>
-        </form>
+        <button onClick={handleClick} className="rounded-md border p-2 hover:bg-gray-100">
+            <TrashIcon className="w-5" />
+        </button>
     );
 }
