@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { useFormState, useFormStatus } from "react-dom";
 import { authenticate } from "@/app/lib/login/actions";
 import { Button } from "@/components/ui/button";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 export default function LoginForm() {
     const [errorMessage, dispatch] = useFormState(authenticate, undefined);
@@ -65,7 +66,8 @@ function LoginButton() {
 
     return (
         <Button className="mt-8 w-full" aria-disabled={pending}>
-            Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+            Log in
+            {pending ? <ReloadIcon className="ml-auto mr-2 h-4 w-4 animate-spin" /> : <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />}
         </Button>
     );
 }
