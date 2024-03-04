@@ -24,7 +24,7 @@ export default function QuotationItemEditForm({
     currencies: Currency[];
 }) {
     const initialState = { message: null, errors: {} };
-    const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
+    const calculatedValue = calculateValue(quotation.mode, quotation.volume, quotation.grossWeight ?? 0);
     const [unitType, setUnitType] = useState(quotationItem.unitType);
     const [value, setValue] = useState(getValueForUnitType(unitType, calculatedValue ?? 0));
     const [price, setPrice] = useState(quotationItem.price);
@@ -139,27 +139,27 @@ export default function QuotationItemEditForm({
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="value" className="mb-2 block text-sm font-medium">
-                        value
+                    <label htmlFor="volume" className="mb-2 block text-sm font-medium">
+                        volume
                     </label>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
                             <Input
-                                id="value"
-                                name="value"
+                                id="volume"
+                                name="volume"
                                 type="number"
                                 step={0.01}
                                 value={value}
                                 onChange={(e) => setValue(parseFloat(e.target.value))}
-                                placeholder="value를 입력하세요."
+                                placeholder="volume을 입력하세요."
                                 aria-describedby="price-error"
                             />
                         </div>
                     </div>
 
                     <div id="price-error" aria-live="polite" aria-atomic="true">
-                        {state.errors?.value &&
-                            state.errors.value.map((error: string) => (
+                        {state.errors?.volume &&
+                            state.errors.volume.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>
                                     {error}
                                 </p>

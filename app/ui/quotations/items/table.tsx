@@ -36,7 +36,7 @@ export default function QuotationItemsTableAgGrid({
                     values: ["CBM", "R.T", "BL", "KG", "40`", "20`", "SHIP"],
                 },
             },
-            { headerName: "Value", field: "value" },
+            { headerName: "Volume", field: "volume" },
             {
                 headerName: "통화",
                 field: "currency",

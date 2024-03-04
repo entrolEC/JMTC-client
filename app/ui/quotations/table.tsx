@@ -54,7 +54,7 @@ export default function QuotationsTable({
         },
         { headerName: "담당자", field: "manager" },
         { headerName: "작성자", field: "writer", editable: false },
-        { headerName: "Value", field: "value" },
+        { headerName: "Volume", field: "volume" },
         { headerName: "G.Weight", field: "grossWeight", valueFormatter: (params) => params.value ?? "-" },
         {
             headerName: "통화",

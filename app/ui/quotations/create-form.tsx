@@ -385,25 +385,25 @@ export default function QuotationCreateForm({
                     </div>
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="value" className="mb-2 block text-sm font-medium">
-                        value
+                    <label htmlFor="volume" className="mb-2 block text-sm font-medium">
+                        volume
                     </label>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
                             <Input
-                                id="value"
-                                name="value"
+                                id="volume"
+                                name="volume"
                                 type="number"
                                 step={0.01}
-                                placeholder="value를 입력하세요."
+                                placeholder="volume을 입력하세요."
                                 aria-describedby="price-error"
                             />
                         </div>
                     </div>
 
                     <div id="price-error" aria-live="polite" aria-atomic="true">
-                        {state.errors?.value &&
-                            state.errors.value.map((error: string) => (
+                        {state.errors?.volume &&
+                            state.errors.volume.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>
                                     {error}
                                 </p>

@@ -84,7 +84,7 @@ export default function QuotationItemCreateForm({
 
 function Form({ item, quotation, currencies }: { item: Item; quotation: QuoteWithCtnr; currencies: Currency[] }) {
     const initialState = { message: null, errors: {} };
-    const calculatedValue = calculateValue(quotation.mode, quotation.value, quotation.grossWeight ?? 0);
+    const calculatedValue = calculateValue(quotation.mode, quotation.volume, quotation.grossWeight ?? 0);
     const defaultUnitType = getDefaultUnitType(item.unitType, quotation.mode, quotation.ctnr); // 모드와 기본유닛타입에 따른 유닛타입
     const [unitType, setUnitType] = useState(defaultUnitType ?? item.unitType);
     const [value, setValue] = useState(getValueForUnitType(item.unitType, calculatedValue));
@@ -187,28 +187,28 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: QuoteWit
                 </div>
 
                 <div className="mb-4">
-                    <label htmlFor="value" className="mb-2 block text-sm font-medium">
-                        value
+                    <label htmlFor="volume" className="mb-2 block text-sm font-medium">
+                        volume
                     </label>
                     <div className="relative mt-2 rounded-md">
                         <div className="relative">
                             <Input
-                                id="value"
-                                name="value"
+                                id="volume"
+                                name="volume"
                                 type="number"
                                 step={0.01}
                                 value={value}
                                 onFocus={(event) => event.target.select()}
                                 onChange={(e) => setValue(parseFloat(e.target.value))}
-                                placeholder="value를 입력하세요."
+                                placeholder="volume을 입력하세요."
                                 aria-describedby="price-error"
                             />
                         </div>
                     </div>
 
                     <div id="price-error" aria-live="polite" aria-atomic="true">
-                        {state.errors?.value &&
-                            state.errors.value.map((error: string) => (
+                        {state.errors?.volume &&
+                            state.errors.volume.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>
                                     {error}
                                 </p>

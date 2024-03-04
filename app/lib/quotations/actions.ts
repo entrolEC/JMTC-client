@@ -11,7 +11,7 @@ const FormSchema = z.object({
     id: z.string(),
     mode: z.string(),
     cargoMode: z.string(),
-    value: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
+    volume: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
     manager: z.string().min(1, "담당자를 입력해주세요"),
     grossWeight: z.nullable(z.coerce.number()),
     writer: z.string(),
@@ -31,7 +31,7 @@ export type State = {
     errors?: {
         mode?: string[];
         cargoMode?: string[];
-        value?: string[];
+        volume?: string[];
         manager?: string[];
         currency?: string[];
         exchangeRate?: string[];
@@ -59,7 +59,7 @@ export async function createQuotation(
         mode: formData.get("mode"),
         cargoMode: formData.get("cargo_mode"),
         manager: formData.get("manager"),
-        value: formData.get("value"),
+        volume: formData.get("volume"),
         grossWeight: formData.get("gross_weight"),
         currency: _currency,
         loadingPort: _loadingPort,
@@ -85,7 +85,8 @@ export async function createQuotation(
     }
 
     // Prepare data for insertion into the database
-    const { mode, cargoMode, manager, value, grossWeight, currency, exchangeRate, dischargePort, loadingPort, incoterm, ctnr } = validatedFields.data;
+    const { mode, cargoMode, manager, volume, grossWeight, currency, exchangeRate, dischargePort, loadingPort, incoterm, ctnr } =
+        validatedFields.data;
 
     // Insert data into the database using Prisma
     try {
@@ -94,7 +95,7 @@ export async function createQuotation(
                 mode: mode,
                 cargoMode: cargoMode,
                 grossWeight: grossWeight,
-                value: value,
+                volume: volume,
                 manager: manager,
                 writer: session.user.name,
                 currency: currency,
@@ -135,7 +136,7 @@ export async function updateQuotation(
     const validatedFields = UpdateQuotation.safeParse({
         grossWeight: formData.get("grossWeight"),
         manager: formData.get("manager"),
-        value: formData.get("value"),
+        volume: formData.get("volume"),
         currency: _currency,
         loadingPort: _loadingPort,
         dischargePort: _dischargePort,
@@ -151,7 +152,7 @@ export async function updateQuotation(
         };
     }
 
-    const { value, manager, grossWeight, currency, loadingPort, dischargePort, ctnr, incoterm, exchangeRate } = validatedFields.data;
+    const { volume, manager, grossWeight, currency, loadingPort, dischargePort, ctnr, incoterm, exchangeRate } = validatedFields.data;
 
     // Update the database record using Prisma
     try {
@@ -159,7 +160,7 @@ export async function updateQuotation(
             where: { id: id },
             data: {
                 grossWeight: grossWeight,
-                value: value,
+                volume: volume,
                 manager: manager,
                 currency: currency,
                 ctnr_id: ctnr,
@@ -186,7 +187,7 @@ export async function updateQuotationWithObject(quote: QuoteWithCtnr | undefined
         cargoMode: quote.cargoMode,
         grossWeight: quote.grossWeight,
         manager: quote.manager,
-        value: quote.value,
+        volume: quote.volume,
         currency: quote.currency,
         loadingPort: quote.loadingPort,
         dischargePort: quote.dischargePort,
@@ -199,7 +200,7 @@ export async function updateQuotationWithObject(quote: QuoteWithCtnr | undefined
         throw new Error(`견적서 업데이트 실패: ${validatedFields.error.errors[0].message}`);
     }
 
-    const { cargoMode, value, manager, grossWeight, currency, loadingPort, dischargePort, ctnr, incoterm, exchangeRate } = validatedFields.data;
+    const { cargoMode, volume, manager, grossWeight, currency, loadingPort, dischargePort, ctnr, incoterm, exchangeRate } = validatedFields.data;
     // Update the database record using Prisma
     try {
         await prisma.quote.update({
@@ -207,7 +208,7 @@ export async function updateQuotationWithObject(quote: QuoteWithCtnr | undefined
             data: {
                 cargoMode: cargoMode,
                 grossWeight: grossWeight,
-                value: value,
+                volume: volume,
                 manager: manager,
                 currency: currency,
                 ctnr_id: ctnr,

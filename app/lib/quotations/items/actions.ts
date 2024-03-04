@@ -12,7 +12,7 @@ const FormSchema = z.object({
     code: z.string().min(1, "Please type a code"),
     name: z.string().min(1, "Please type a name"),
     unitType: z.string().min(1, "Please select a unitType"),
-    value: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
+    volume: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
     currency: z.string(),
     price: z.coerce.number(),
 });
@@ -26,7 +26,7 @@ export type State = {
         code?: string[];
         name?: string[];
         unitType?: string[];
-        value?: string[];
+        volume?: string[];
         currency?: string[];
         price?: string[];
     };
@@ -40,7 +40,7 @@ export async function createQuotationItem(quotation: Quote, _currency: string | 
         code: formData.get("code"),
         name: formData.get("name"),
         unitType: formData.get("unit_type"),
-        value: formData.get("value"),
+        volume: formData.get("volume"),
         currency: _currency,
         price: formData.get("price"),
     });
@@ -54,9 +54,9 @@ export async function createQuotationItem(quotation: Quote, _currency: string | 
     }
 
     // Prepare data for insertion into the database
-    const { code, name, unitType, value, currency, price } = validatedFields.data;
+    const { code, name, unitType, volume, currency, price } = validatedFields.data;
 
-    let amount = value * price;
+    let amount = volume * price;
     if (currency !== "KRW") {
         amount *= exchangeRate;
     }
@@ -75,7 +75,7 @@ export async function createQuotationItem(quotation: Quote, _currency: string | 
                 name: name,
                 quote_id: quotationId,
                 unitType: unitType,
-                value: value,
+                volume: volume,
                 currency: currency,
                 price: price,
                 amount: amount,
@@ -106,7 +106,7 @@ export async function updateQuotationItem(
         code: formData.get("code"),
         name: formData.get("name"),
         unitType: formData.get("unit_type"),
-        value: formData.get("value"),
+        volume: formData.get("volume"),
         currency: _currency,
         price: formData.get("price"),
     });
@@ -118,9 +118,9 @@ export async function updateQuotationItem(
         };
     }
 
-    const { unitType, value, currency, price } = validatedFields.data;
+    const { unitType, volume, currency, price } = validatedFields.data;
 
-    let amount = value * price;
+    let amount = volume * price;
     if (currency !== "KRW") {
         amount *= exchangeRate;
     }
@@ -137,7 +137,7 @@ export async function updateQuotationItem(
             data: {
                 quote_id: quotationId,
                 unitType: unitType,
-                value: value,
+                volume: volume,
                 currency: currency,
                 price: price,
                 amount: amount,
@@ -166,7 +166,7 @@ export async function updateQuotationItemWithObject(
 
     const validatedFields = UpdateQuotationItem.safeParse({
         unitType: quoteItem.unitType,
-        value: quoteItem.value,
+        volume: quoteItem.volume,
         currency: quoteItem.currency,
         price: quoteItem.price,
     });
@@ -175,9 +175,9 @@ export async function updateQuotationItemWithObject(
         throw new Error(`견적서 항목 업데이트 실패: ${validatedFields.error.errors[0].message}`);
     }
 
-    const { unitType, value, currency, price } = validatedFields.data;
+    const { unitType, volume, currency, price } = validatedFields.data;
 
-    let amount = value * price;
+    let amount = volume * price;
     if (currency !== "KRW") {
         amount *= exchangeRate;
     }
@@ -192,7 +192,7 @@ export async function updateQuotationItemWithObject(
             where: { id: quoteItem.id },
             data: {
                 unitType: unitType,
-                value: value,
+                volume: volume,
                 currency: currency,
                 price: price,
                 quote_id: quotationId,
