@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/app/lib/prismaClient";
+import { Item } from "@prisma/client";
 
 const FormSchema = z.object({
     id: z.string(),
@@ -70,6 +71,42 @@ export async function createItem(prevState: State, formData: FormData) {
     }
 
     // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath("/dashboard/items");
+    redirect("/dashboard/items");
+}
+
+export async function updateItemWithObject(item: Item | undefined, prevState: State, formData: FormData) {
+    if (item === undefined) {
+        throw new Error("항목 업데이트 실패: Object를 찾을 수 없음");
+    }
+
+    const validatedFields = UpdateItem.safeParse({
+        code: item.code,
+        name: item.name,
+        unitType: item.unitType,
+        vat: item.vat,
+    });
+
+    if (!validatedFields.success) {
+        throw new Error(`항목 업데이트 실패: ${validatedFields.error.errors[0].message}`);
+    }
+
+    const { code, name, unitType, vat } = validatedFields.data;
+    // Update the database record using Prisma
+    try {
+        await prisma.item.update({
+            where: { id: item.id },
+            data: {
+                code: code,
+                name: name,
+                unitType: unitType,
+                vat: vat,
+            },
+        });
+    } catch (error) {
+        throw new Error("항목 업데이트 실패: 데이터베이스 오류");
+    }
+
     revalidatePath("/dashboard/items");
     redirect("/dashboard/items");
 }

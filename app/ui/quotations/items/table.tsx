@@ -1,8 +1,8 @@
 "use client";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import "ag-grid-community/styles/ag-grid.css"; // Import AG Grid styles
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Import AG Grid theme
-import { AgGridReact } from "ag-grid-react"; // Import AG Grid React
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
+import { AgGridReact } from "ag-grid-react";
 import { Currency, QuoteItem } from "@prisma/client";
 import { DeleteQuotationItem } from "@/app/ui/quotations/items/buttons";
 import { toast } from "sonner";
@@ -103,7 +103,6 @@ export default function QuotationItemsTableAgGrid({
                 return;
             }
             const updatedItem = { ...oldItem, [field]: newValue };
-            console.log("newItem", updatedItem);
             const promise = updateQuotationItemWithObject(updatedItem, quotation, state, new FormData());
 
             toast.promise(promise, {
@@ -111,7 +110,7 @@ export default function QuotationItemsTableAgGrid({
                 success: (data) => {
                     rowImmutableStore = rowImmutableStore.map((item) => (item.id == updatedItem.id ? updatedItem : item));
                     gridRef.current!.api.setRowData(rowImmutableStore);
-                    return `견적서 업데이트 완료.`;
+                    return `견적서 항목 업데이트 완료.`;
                 },
                 error: (e) => `${e.message}`,
             });
