@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { CellEditRequestEvent, ColDef, GetRowIdFunc, GetRowIdParams, GridReadyEvent } from "ag-grid-community";
 import { updateQuotationItemWithObject } from "@/app/lib/quotations/items/actions";
 import { QuoteWithCtnr } from "@/app/lib/definitions";
+import { formatWon } from "@/app/lib/utils";
+import TotalRow from "@/app/ui/quotations/items/total-row";
 
 let rowImmutableStore: any[] = [];
 
@@ -21,6 +23,7 @@ export default function QuotationItemsTableAgGrid({
     quotation: QuoteWithCtnr;
     currencies: Currency[];
 }) {
+    const height = quotationItems.length * 42 + 92;
     const gridRef = useRef<AgGridReact<QuoteItem>>(null);
     const [state, setState] = useState({ message: "" });
 
@@ -49,22 +52,31 @@ export default function QuotationItemsTableAgGrid({
             {
                 headerName: "AMOUNT",
                 field: "amount",
-                valueFormatter: ({ value }) => new Intl.NumberFormat("ko", { style: "currency", currency: "KRW" }).format(value),
+                valueFormatter: ({ value }) => formatWon(value),
                 editable: false,
             },
             {
                 headerName: "VAT",
                 field: "vat",
-                valueFormatter: ({ value }) => new Intl.NumberFormat("ko", { style: "currency", currency: "KRW" }).format(value),
+                valueFormatter: ({ value }) => formatWon(value),
                 editable: false,
             },
             {
                 headerName: "삭제",
+                field: "delete",
+                cellRendererSelector: (params) => {
+                    if (params.node.rowPinned) {
+                        return {
+                            component: TotalRow,
+                        };
+                    }
+                },
+                valueFormatter: ({ value }) => formatWon(value),
                 cellRenderer: "deleteQuotationItem",
                 cellEditorParams: {
                     quotationId: quotation.id,
                 },
-                width: 70,
+                width: 200,
                 editable: false,
                 sortable: false,
                 filter: false,
@@ -90,6 +102,12 @@ export default function QuotationItemsTableAgGrid({
     const getRowId = useMemo<GetRowIdFunc>(() => {
         return (params: GetRowIdParams) => params.data.id;
     }, []);
+
+    const pinnedBottomRowData = useCallback((): any[] => {
+        const amountSum = quotationItems.reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0);
+        const vatSum = quotationItems.reduce((previousValue, currentValue) => previousValue + currentValue.vat, 0);
+        return [{ amount: amountSum, vat: vatSum, delete: amountSum + vatSum }];
+    }, [quotationItems]);
 
     const onCellEditRequest = useCallback(
         (event: CellEditRequestEvent) => {
@@ -119,7 +137,7 @@ export default function QuotationItemsTableAgGrid({
     );
 
     return (
-        <div className="w-full h-screen ag-theme-quartz">
+        <div className="w-full ag-theme-quartz" style={{ height: height }}>
             <AgGridReact
                 ref={gridRef}
                 components={{ deleteQuotationItem: DeleteQuotationItem }}
@@ -130,6 +148,7 @@ export default function QuotationItemsTableAgGrid({
                 getRowId={getRowId}
                 readOnlyEdit={true}
                 onCellEditRequest={onCellEditRequest}
+                pinnedBottomRowData={pinnedBottomRowData()}
                 stopEditingWhenCellsLoseFocus
             />
         </div>

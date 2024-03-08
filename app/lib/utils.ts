@@ -70,3 +70,7 @@ export function multiply(a: number, b: number) {
 function numberOfDecimalPlaces(...args: number[]) {
     return Math.max(...args.map((arg) => (arg.toString().split(".")[1] || "").length));
 }
+
+export function formatWon(value: number) {
+    return new Intl.NumberFormat("ko", { style: "currency", currency: "KRW" }).format(value);
+}
