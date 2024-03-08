@@ -36,7 +36,7 @@ export default function QuotationItemsTableAgGrid({
                     values: ["CBM", "R.T", "BL", "KG", "40`", "20`", "SHIP"],
                 },
             },
-            { headerName: "Volume", field: "volume" },
+            { headerName: "VOLUME", field: "volume" },
             {
                 headerName: "통화",
                 field: "currency",
@@ -45,9 +45,9 @@ export default function QuotationItemsTableAgGrid({
                     values: currencies.map((currency) => currency.name),
                 },
             },
-            { headerName: "Price", field: "price" },
+            { headerName: "PRICE", field: "price" },
             {
-                headerName: "Amount",
+                headerName: "AMOUNT",
                 field: "amount",
                 valueFormatter: ({ value }) => new Intl.NumberFormat("ko", { style: "currency", currency: "KRW" }).format(value),
                 editable: false,

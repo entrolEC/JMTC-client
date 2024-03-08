@@ -45,7 +45,7 @@ export default function QuotationsTable({
             editable: false,
         },
         {
-            headerName: "Cargo mode",
+            headerName: "CARGO MODE",
             field: "cargoMode",
             cellEditor: "agSelectCellEditor",
             cellEditorParams: {
@@ -54,8 +54,8 @@ export default function QuotationsTable({
         },
         { headerName: "담당자", field: "manager" },
         { headerName: "작성자", field: "writer", editable: false },
-        { headerName: "Volume", field: "volume" },
-        { headerName: "G.Weight", field: "grossWeight", valueFormatter: (params) => params.value ?? "-" },
+        { headerName: "VOLUME", field: "volume" },
+        { headerName: "G.WEIGHT", field: "grossWeight", valueFormatter: (params) => params.value ?? "-" },
         {
             headerName: "통화",
             field: "currency",
@@ -66,20 +66,22 @@ export default function QuotationsTable({
         },
         { headerName: "환율", field: "exchangeRate" },
         {
-            headerName: "Port of Loading",
+            headerName: "PORT OF LOADING",
             field: "loadingPort",
             cellEditor: "agSelectCellEditor",
             cellEditorParams: {
                 values: ports.map((port) => port.name),
             },
+            width: 200,
         },
         {
-            headerName: "Port of Discharge",
+            headerName: "PORT OF DISCHARGE",
             field: "dischargePort",
             cellEditor: "agSelectCellEditor",
             cellEditorParams: {
                 values: ports.map((port) => port.name),
             },
+            width: 200,
         },
         {
             headerName: "CTNR",
