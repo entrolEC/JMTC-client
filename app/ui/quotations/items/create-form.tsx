@@ -20,10 +20,12 @@ export default function QuotationItemCreateForm({
     items,
     quotation,
     currencies,
+    position,
 }: {
     items: Item[];
     quotation: QuoteWithCtnr;
     currencies: Currency[];
+    position: number;
 }) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState<Item>();
@@ -77,12 +79,12 @@ export default function QuotationItemCreateForm({
                     </Popover>
                 </div>
             </div>
-            {value && <Form key={value.id} item={value} quotation={quotation} currencies={currencies} />}
+            {value && <Form key={value.id} item={value} quotation={quotation} currencies={currencies} position={position} />}
         </div>
     );
 }
 
-function Form({ item, quotation, currencies }: { item: Item; quotation: QuoteWithCtnr; currencies: Currency[] }) {
+function Form({ item, quotation, currencies, position }: { item: Item; quotation: QuoteWithCtnr; currencies: Currency[]; position: number }) {
     const initialState = { message: null, errors: {} };
     const calculatedValue = calculateValue(quotation.mode, quotation.volume, quotation.grossWeight ?? 0);
     const defaultUnitType = getDefaultUnitType(item.unitType, quotation.mode, quotation.ctnr); // 모드와 기본유닛타입에 따른 유닛타입
@@ -93,7 +95,7 @@ function Form({ item, quotation, currencies }: { item: Item; quotation: QuoteWit
     const [open, setOpen] = useState(false);
     const [vatEnable, setVatEnable] = useState(item.vat);
     const [currency, setCurrency] = useState<string>();
-    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation, currency, vatEnable);
+    const createQuotationItemWithQuotationId = createQuotationItem.bind(null, quotation, currency, vatEnable, position);
     const [state, dispatch] = useFormState(createQuotationItemWithQuotationId, initialState);
 
     const selections = currencies.map((currency) => ({

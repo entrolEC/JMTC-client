@@ -78,6 +78,7 @@ model Item {
 
 model QuoteItem {
   id       String @id @default(uuid())
+  position Float  @default(0)
   quote_id String
   quote    Quote  @relation(fields: [quote_id], references: [id], onDelete: Cascade)
   code     String

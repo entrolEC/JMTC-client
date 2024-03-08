@@ -38,6 +38,8 @@ export default async function Page({
         notFound();
     }
 
+    const sortedQuotationItems = quotationItems.sort((a, b) => a.position - b.position);
+    const lastItemPosition = sortedQuotationItems[sortedQuotationItems.length - 1].position;
     return (
         <div className="w-full">
             <div className="flex w-full items-center justify-between">
@@ -45,10 +47,10 @@ export default async function Page({
             </div>
             <div className="my-4 flex items-center justify-between gap-2 md:mt-8">
                 <Search placeholder="Search QuotationItems..." />
-                <CreateQuotationItem id={id} />
+                <CreateQuotationItem id={id} lastItemPosition={lastItemPosition} />
             </div>
             <Suspense key={query} fallback={<InvoicesTableSkeleton />}>
-                <QuotationItemsTableAgGrid quotationItems={quotationItems} quotation={quotation} currencies={currencies} />
+                <QuotationItemsTableAgGrid quotationItems={sortedQuotationItems} quotation={quotation} currencies={currencies} />
             </Suspense>
         </div>
     );

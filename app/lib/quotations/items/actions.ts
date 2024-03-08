@@ -15,6 +15,7 @@ const FormSchema = z.object({
     volume: z.coerce.number().gt(0, "최소 0보다 큰 값을 입력해야 합니다."),
     currency: z.string(),
     price: z.coerce.number(),
+    position: z.number(),
 });
 
 const CreateQuotationItem = FormSchema.omit({ id: true });
@@ -33,7 +34,14 @@ export type State = {
     message?: string | null;
 };
 
-export async function createQuotationItem(quotation: Quote, _currency: string | undefined, isVat: boolean, prevState: State, formData: FormData) {
+export async function createQuotationItem(
+    quotation: Quote,
+    _currency: string | undefined,
+    isVat: boolean,
+    _position: number,
+    prevState: State,
+    formData: FormData,
+) {
     const { id: quotationId, exchangeRate } = quotation;
     // Validate form fields using Zod
     const validatedFields = CreateQuotationItem.safeParse({
@@ -43,6 +51,7 @@ export async function createQuotationItem(quotation: Quote, _currency: string | 
         volume: formData.get("volume"),
         currency: _currency,
         price: formData.get("price"),
+        position: _position,
     });
 
     // If form validation fails, return errors early. Otherwise, continue.
@@ -54,7 +63,7 @@ export async function createQuotationItem(quotation: Quote, _currency: string | 
     }
 
     // Prepare data for insertion into the database
-    const { code, name, unitType, volume, currency, price } = validatedFields.data;
+    const { code, name, unitType, volume, currency, price, position } = validatedFields.data;
 
     let amount = volume * price;
     if (currency !== "KRW") {
@@ -80,6 +89,7 @@ export async function createQuotationItem(quotation: Quote, _currency: string | 
                 price: price,
                 amount: amount,
                 vat: vat,
+                position: position,
             },
         });
     } catch (error: any) {
@@ -169,13 +179,14 @@ export async function updateQuotationItemWithObject(
         volume: quoteItem.volume,
         currency: quoteItem.currency,
         price: quoteItem.price,
+        position: quoteItem.position,
     });
 
     if (!validatedFields.success) {
         throw new Error(`견적서 항목 업데이트 실패: ${validatedFields.error.errors[0].message}`);
     }
 
-    const { unitType, volume, currency, price } = validatedFields.data;
+    const { unitType, volume, currency, price, position } = validatedFields.data;
 
     let amount = volume * price;
     if (currency !== "KRW") {
@@ -198,6 +209,7 @@ export async function updateQuotationItemWithObject(
                 quote_id: quotationId,
                 amount: amount,
                 vat: vat,
+                position: position,
             },
         });
     } catch (error) {
