@@ -3,12 +3,12 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { AgGridReact } from "ag-grid-react";
-import { Currency, QuoteItem } from "@prisma/client";
+import { Currency } from "@prisma/client";
 import { DeleteQuotationItem } from "@/app/ui/quotations/items/buttons";
 import { toast } from "sonner";
 import { CellEditRequestEvent, ColDef, GetRowIdFunc, GetRowIdParams, RowDragEndEvent, RowDragEnterEvent } from "ag-grid-community";
 import { updateQuotationItemWithObject } from "@/app/lib/quotations/items/actions";
-import { QuoteWithCtnr } from "@/app/lib/definitions";
+import { QuoteItemOrder, QuoteWithCtnr } from "@/app/lib/definitions";
 import { formatWon } from "@/app/lib/utils";
 import TotalRow from "@/app/ui/quotations/items/total-row";
 
@@ -19,17 +19,17 @@ export default function QuotationItemsTableAgGrid({
     quotation,
     currencies,
 }: {
-    quotationItems: QuoteItem[];
+    quotationItems: QuoteItemOrder[];
     quotation: QuoteWithCtnr;
     currencies: Currency[];
 }) {
     const height = quotationItems.length * 42 + 92;
-    const gridRef = useRef<AgGridReact<QuoteItem>>(null);
+    const gridRef = useRef<AgGridReact<QuoteItemOrder>>(null);
     const [state, setState] = useState({ message: "" });
 
     const columnDefs = useMemo<ColDef[]>(
         () => [
-            { headerName: "", field: "position", rowDrag: true },
+            { headerName: "", field: "order", rowDrag: true },
             { headerName: "코드", field: "code", sortable: true, filter: true, editable: false },
             { headerName: "이름", field: "name", width: 200, editable: false },
             {

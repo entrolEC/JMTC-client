@@ -9,6 +9,7 @@ import QuotationItemsTableAgGrid from "@/app/ui/quotations/items/table";
 import { fetchFilteredQuotationItems, fetchQuotationById } from "@/app/lib/quotations/data";
 import { notFound } from "next/navigation";
 import { fetchCurrencies } from "@/app/lib/currencies/data";
+import { QuoteItemOrder } from "@/app/lib/definitions";
 
 export const metadata: Metadata = {
     title: "quotation items",
@@ -38,7 +39,9 @@ export default async function Page({
         notFound();
     }
 
-    const sortedQuotationItems = quotationItems.sort((a, b) => a.position - b.position);
+    const sortedQuotationItems: QuoteItemOrder[] = quotationItems
+        .sort((a, b) => a.position - b.position)
+        .map((quotationItem, idx) => ({ ...quotationItem, order: idx + 1 }));
     const lastItemPosition = sortedQuotationItems[sortedQuotationItems.length - 1].position;
     return (
         <div className="w-full">

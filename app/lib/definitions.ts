@@ -1,4 +1,4 @@
-import { Quote } from "@prisma/client";
+import { Quote, QuoteItem } from "@prisma/client";
 import { Ctnr } from ".prisma/client";
 
 export type Revenue = {
@@ -25,3 +25,7 @@ export type InvoiceForm = {
 };
 
 export type QuoteWithCtnr = Quote & { ctnr: Ctnr };
+
+export type Order = { order: number };
+
+export type QuoteItemOrder = QuoteItem & Order;
