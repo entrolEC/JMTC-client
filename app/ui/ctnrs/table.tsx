@@ -4,7 +4,7 @@ import { AgGridReact } from "ag-grid-react";
 import { Ctnr } from ".prisma/client";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { DeleteCtnr } from "@/app/ui/ctnrs/buttons"; // Assume UpdateCtnrIcon is a component you have for editing
+import { DeleteCtnr } from "@/app/ui/ctnrs/buttons";
 import { CellEditRequestEvent, ColDef, ColGroupDef, GetRowIdFunc, GetRowIdParams, GridReadyEvent } from "ag-grid-community";
 import { toast } from "sonner";
 import { updateCtnrWithObject } from "@/app/lib/ctnrs/actions";
@@ -21,7 +21,7 @@ export default function CtnrsTableAgGrid({ ctnrs }: { ctnrs: Ctnr[] }) {
             { headerName: "이름", field: "name", filter: true },
             { headerName: "컨테이너 모드", field: "containerMode" },
             { headerName: "설명", field: "description" },
-            { headerName: "삭제", cellRenderer: "deleteCtnr", editable: false },
+            { headerName: "삭제", cellRenderer: "deleteCtnr", width: 70, editable: false, sortable: false, filter: false },
         ],
         [],
     );
@@ -69,7 +69,7 @@ export default function CtnrsTableAgGrid({ ctnrs }: { ctnrs: Ctnr[] }) {
                 error: (e) => `${e.message}`,
             });
         },
-        [rowImmutableStore], // Add necessary dependencies here
+        [rowImmutableStore],
     );
 
     return (
