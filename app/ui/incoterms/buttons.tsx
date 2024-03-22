@@ -22,15 +22,15 @@ export function UpdateIncoterm({ id }: { id: string }) {
     );
 }
 
-export function DeleteIncoterm({ id }: { id: string }) {
-    const deleteIncotermWithId = deleteIncoterm.bind(null, id);
+export function DeleteIncoterm(props: any) {
+    const handleClick = () => {
+        const id = props.data.id;
+        deleteIncoterm(id);
+    };
 
     return (
-        <form action={deleteIncotermWithId}>
-            <button className="rounded-md border p-2 hover:bg-gray-100">
-                <span className="sr-only">Delete</span>
-                <TrashIcon className="w-5" />
-            </button>
-        </form>
+        <button onClick={handleClick} className="rounded-md border p-2 hover:bg-gray-100">
+            <TrashIcon className="w-5" />
+        </button>
     );
 }
