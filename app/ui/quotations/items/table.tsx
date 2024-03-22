@@ -6,14 +6,14 @@ import { AgGridReact } from "ag-grid-react";
 import { Currency } from "@prisma/client";
 import { DeleteQuotationItem } from "@/app/ui/quotations/items/buttons";
 import { toast } from "sonner";
-import { CellEditRequestEvent, ColDef, GetRowIdFunc, GetRowIdParams, RowDragEndEvent, RowDragEnterEvent } from "ag-grid-community";
+import { CellEditRequestEvent, ColDef, GetRowIdFunc, GetRowIdParams, GridReadyEvent, RowDragEndEvent, RowDragEnterEvent } from "ag-grid-community";
 import { updateQuotationItemWithObject } from "@/app/lib/quotations/items/actions";
 import { QuoteItemOrder, QuoteWithCtnr } from "@/app/lib/definitions";
 import { formatWon } from "@/app/lib/utils";
 import TotalRow from "@/app/ui/quotations/items/total-row";
 
 let dragStartIndex: null | number = null;
-
+let rowImmutableStore: any[] = [];
 export default function QuotationItemsTableAgGrid({
     quotationItems,
     quotation,
@@ -96,6 +96,13 @@ export default function QuotationItemsTableAgGrid({
         [],
     );
 
+    const onGridReady = useCallback(
+        (params: GridReadyEvent) => {
+            rowImmutableStore = quotationItems;
+        },
+        [quotationItems],
+    );
+
     const getRowId = useMemo<GetRowIdFunc>(() => {
         return (params: GetRowIdParams) => params.data.id;
     }, []);
@@ -144,12 +151,12 @@ export default function QuotationItemsTableAgGrid({
             let newPosition = e.node.data.position;
             const constant = e.overIndex > dragStartIndex ? 1 : 0;
             if (e.overIndex === 0) {
-                newPosition = quotationItems[0].position - 1;
-            } else if (e.overIndex === quotationItems.length - 1) {
-                newPosition = quotationItems[quotationItems.length - 1].position + 1;
+                newPosition = rowImmutableStore[0].position - 1;
+            } else if (e.overIndex === rowImmutableStore.length - 1) {
+                newPosition = rowImmutableStore[rowImmutableStore.length - 1].position + 1;
             } else {
-                const prevPosition = quotationItems[e.overIndex - 1 + constant].position;
-                const nextPosition = quotationItems[e.overIndex + constant].position;
+                const prevPosition = rowImmutableStore[e.overIndex - 1 + constant].position;
+                const nextPosition = rowImmutableStore[e.overIndex + constant].position;
                 newPosition = (prevPosition + nextPosition) / 2;
             }
             const updatedItem = { ...oldItem, position: newPosition };
@@ -159,14 +166,14 @@ export default function QuotationItemsTableAgGrid({
             toast.promise(promise, {
                 loading: "업데이트 중...",
                 success: (data) => {
-                    quotationItems = quotationItems.map((item) => (item.id == updatedItem.id ? updatedItem : item));
-                    gridRef.current!.api.setRowData(quotationItems);
+                    rowImmutableStore = rowImmutableStore.map((item) => (item.id == updatedItem.id ? updatedItem : item));
+                    gridRef.current!.api.setRowData(rowImmutableStore);
                     return `견적서 항목 업데이트 완료.`;
                 },
                 error: (e) => `${e.message}`,
             });
         },
-        [quotationItems],
+        [rowImmutableStore],
     );
 
     return (
@@ -183,6 +190,7 @@ export default function QuotationItemsTableAgGrid({
                 pinnedBottomRowData={pinnedBottomRowData()}
                 onRowDragEnd={onRowDragEnd}
                 onRowDragEnter={onRowDragEnter}
+                onGridReady={onGridReady}
                 rowDragManaged
                 stopEditingWhenCellsLoseFocus
             />
