@@ -61,9 +61,12 @@ export default function ItemsTableAgGrid({ items }: { items: Item[] }) {
         [],
     );
 
-    const onGridReady = useCallback((params: GridReadyEvent) => {
-        rowImmutableStore = items;
-    }, []);
+    const onGridReady = useCallback(
+        (params: GridReadyEvent) => {
+            rowImmutableStore = items;
+        },
+        [items],
+    );
 
     const getRowId = useMemo<GetRowIdFunc>(() => {
         return (params: GetRowIdParams) => params.data.id;

@@ -16,7 +16,7 @@ export default function PortsTableAgGrid({ ports }: { ports: Port[] }) {
 
     const columnDefs = useMemo<ColDef[]>(
         () => [
-            { headerName: "코드", field: "code", sortable: true, filter: true },
+            { headerName: "코드", field: "code", sortable: true, filter: true, sort: "desc" },
             { headerName: "이름", field: "name", filter: true },
             { headerName: "설명", field: "description" },
         ],
@@ -33,9 +33,12 @@ export default function PortsTableAgGrid({ ports }: { ports: Port[] }) {
         [],
     );
 
-    const onGridReady = useCallback((params: GridReadyEvent) => {
-        rowImmutableStore = ports;
-    }, []);
+    const onGridReady = useCallback(
+        (params: GridReadyEvent) => {
+            rowImmutableStore = ports;
+        },
+        [ports],
+    );
 
     const getRowId = useCallback((params: GetRowIdParams) => params.data.id, []);
 
