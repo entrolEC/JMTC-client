@@ -22,15 +22,15 @@ export function UpdateCtnr({ id }: { id: string }) {
     );
 }
 
-export function DeleteCtnr({ id }: { id: string }) {
-    const deleteCtnrWithId = deleteCtnr.bind(null, id);
+export function DeleteCtnr(props: any) {
+    const handleClick = () => {
+        const id = props.data.id;
+        deleteCtnr(id);
+    };
 
     return (
-        <form action={deleteCtnrWithId}>
-            <button className="rounded-md border p-2 hover:bg-gray-100">
-                <span className="sr-only">Delete</span>
-                <TrashIcon className="w-5" />
-            </button>
-        </form>
+        <button onClick={handleClick} className="rounded-md border p-2 hover:bg-gray-100">
+            <TrashIcon className="w-5" />
+        </button>
     );
 }

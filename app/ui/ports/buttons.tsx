@@ -22,15 +22,15 @@ export function UpdatePort({ id }: { id: string }) {
     );
 }
 
-export function DeletePort({ id }: { id: string }) {
-    const deletePortWithId = deletePort.bind(null, id);
+export function DeletePort(props: any) {
+    const handleClick = () => {
+        const id = props.data.id;
+        deletePort(id);
+    };
 
     return (
-        <form action={deletePortWithId}>
-            <button className="rounded-md border p-2 hover:bg-gray-100">
-                <span className="sr-only">Delete</span>
-                <TrashIcon className="w-5" />
-            </button>
-        </form>
+        <button onClick={handleClick} className="rounded-md border p-2 hover:bg-gray-100">
+            <TrashIcon className="w-5" />
+        </button>
     );
 }

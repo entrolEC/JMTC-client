@@ -22,15 +22,15 @@ export function UpdateItem({ id }: { id: string }) {
     );
 }
 
-export function DeleteItem({ id }: { id: string }) {
-    const deleteItemWithId = deleteItem.bind(null, id);
+export function DeleteItem(props: any) {
+    const handleClick = () => {
+        const id = props.data.id;
+        deleteItem(id);
+    };
 
     return (
-        <form action={deleteItemWithId}>
-            <button className="rounded-md border p-2 hover:bg-gray-100">
-                <span className="sr-only">Delete</span>
-                <TrashIcon className="w-5" />
-            </button>
-        </form>
+        <button onClick={handleClick} className="rounded-md border p-2 hover:bg-gray-100">
+            <TrashIcon className="w-5" />
+        </button>
     );
 }
