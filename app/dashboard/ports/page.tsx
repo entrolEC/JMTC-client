@@ -5,7 +5,7 @@ import Search from "@/app/ui/search";
 import { Suspense } from "react";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { CreatePort } from "@/app/ui/ports/buttons";
-import PortsTable from "@/app/ui/ports/table";
+import PortsTableAgGrid from "@/app/ui/ports/table";
 import { fetchFilteredPorts } from "@/app/lib/ports/data";
 
 export const metadata: Metadata = {
@@ -29,12 +29,12 @@ export default async function Page({
             <div className="flex w-full items-center justify-between">
                 <h1 className={`${lusitana.className} text-2xl`}>Ports</h1>
             </div>
-            <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+            <div className="my-4 flex items-center justify-between gap-2 md:mt-8">
                 <Search placeholder="Port 검색..." />
                 <CreatePort />
             </div>
             <Suspense key={query} fallback={<InvoicesTableSkeleton />}>
-                <PortsTable ports={ports} />
+                <PortsTableAgGrid ports={ports} />
             </Suspense>
         </div>
     );

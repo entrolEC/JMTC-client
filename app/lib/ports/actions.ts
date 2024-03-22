@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/app/lib/prismaClient";
+import { Port } from ".prisma/client";
 
 const FormSchema = z.object({
     id: z.string(),
@@ -66,6 +67,40 @@ export async function createPort(prevState: State, formData: FormData) {
     }
 
     // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath("/dashboard/ports");
+    redirect("/dashboard/ports");
+}
+
+export async function updatePortWithObject(port: Port | undefined, prevState: State, formData: FormData) {
+    if (port === undefined) {
+        throw new Error("항목 업데이트 실패: Object를 찾을 수 없음");
+    }
+
+    const validatedFields = UpdatePort.safeParse({
+        code: port.code,
+        name: port.name,
+        description: port.description,
+    });
+
+    if (!validatedFields.success) {
+        throw new Error(`항목 업데이트 실패: ${validatedFields.error.errors[0].message}`);
+    }
+
+    const { code, name, description } = validatedFields.data;
+    // Update the database record using Prisma
+    try {
+        await prisma.port.update({
+            where: { id: port.id },
+            data: {
+                code: code,
+                name: name,
+                description: description,
+            },
+        });
+    } catch (error) {
+        throw new Error("항목 업데이트 실패: 데이터베이스 오류");
+    }
+
     revalidatePath("/dashboard/ports");
     redirect("/dashboard/ports");
 }
