@@ -19,6 +19,7 @@ export default function PortsTableAgGrid({ ports }: { ports: Port[] }) {
             { headerName: "코드", field: "code", sortable: true, filter: true, sort: "desc" },
             { headerName: "이름", field: "name", filter: true },
             { headerName: "설명", field: "description" },
+            { headerName: "삭제", cellRenderer: "deletePort", width: 70, editable: false, sortable: false, filter: false },
         ],
         [],
     );
