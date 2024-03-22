@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/app/lib/prismaClient";
+import { Ctnr } from ".prisma/client";
 
 const FormSchema = z.object({
     id: z.string(),
@@ -70,6 +71,42 @@ export async function createCtnr(prevState: State, formData: FormData) {
     }
 
     // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath("/dashboard/ctnrs");
+    redirect("/dashboard/ctnrs");
+}
+
+export async function updateCtnrWithObject(ctnr: Ctnr | undefined, prevState: State, formData: FormData) {
+    if (ctnr === undefined) {
+        throw new Error("항목 업데이트 실패: Object를 찾을 수 없음");
+    }
+
+    const validatedFields = UpdateCtnr.safeParse({
+        code: ctnr.code,
+        name: ctnr.name,
+        containerMode: ctnr.containerMode,
+        description: ctnr.description,
+    });
+
+    if (!validatedFields.success) {
+        throw new Error(`항목 업데이트 실패: ${validatedFields.error.errors[0].message}`);
+    }
+
+    const { code, name, containerMode, description } = validatedFields.data;
+    // Update the database record using Prisma
+    try {
+        await prisma.ctnr.update({
+            where: { id: ctnr.id },
+            data: {
+                code: code,
+                name: name,
+                containerMode: containerMode,
+                description: description,
+            },
+        });
+    } catch (error) {
+        throw new Error("항목 업데이트 실패: 데이터베이스 오류");
+    }
+
     revalidatePath("/dashboard/ctnrs");
     redirect("/dashboard/ctnrs");
 }

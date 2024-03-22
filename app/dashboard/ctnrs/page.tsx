@@ -5,7 +5,7 @@ import Search from "@/app/ui/search";
 import { Suspense } from "react";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { CreateCtnr } from "@/app/ui/ctnrs/buttons";
-import CtnrsTable from "@/app/ui/ctnrs/table";
+import CtnrsTableAgGrid from "@/app/ui/ctnrs/table";
 import { fetchFilteredCtnrs } from "@/app/lib/ctnrs/data";
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ export default async function Page({
                 <CreateCtnr />
             </div>
             <Suspense key={query} fallback={<InvoicesTableSkeleton />}>
-                <CtnrsTable ctnrs={ctnrs} />
+                <CtnrsTableAgGrid ctnrs={ctnrs} />
             </Suspense>
         </div>
     );
